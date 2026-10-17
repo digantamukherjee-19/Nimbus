@@ -13,6 +13,21 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Fredoka:wght@300..700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
+
+  <!-- Immediate Theme Initializer to prevent visual flash on page navigation -->
+  <script>
+    (function() {
+      try {
+        var savedTheme = localStorage.getItem('nimbus_theme');
+        if (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          savedTheme = 'dream';
+        }
+        if (savedTheme === 'dream') {
+          document.documentElement.setAttribute('data-theme', 'dream');
+        }
+      } catch(e) {}
+    })();
+  </script>
 </head>
 <body data-theme="day">
   <!-- Accessibility Skip Link -->
@@ -92,6 +107,7 @@
 
         <div class="projects-grid">
           <!-- PROJECT 001: STARSONG RADIO -->
+          <!-- PROJECT 001: STARSONG RADIO & LULLABY BOX -->
           <article class="project-card project-radio" id="project-starsong">
             <div class="project-header">
               <span class="project-id">PROJECT 001</span>
@@ -100,7 +116,7 @@
 
             <div class="project-visual">
               <div class="radio-illustration-frame">
-                <img src="assets/starsong-radio.svg" alt="Vintage Starsong Radio celestial music box" class="project-art-img">
+                <img src="assets/images/lullaby-box.png" alt="The Lullaby Box, a magical music box for sleepy dreams" class="project-art-img lullaby-box-img">
               </div>
 
               <!-- Animated Sound Wave Visualizer Bars -->
@@ -116,9 +132,9 @@
             </div>
 
             <div class="project-info">
-              <h2 class="project-title">Starsong Radio</h2>
+              <h2 class="project-title">StarSong Radio & Lullaby Box</h2>
               <p class="project-desc">
-                “A pocket-sized lullaby made from the sounds of distant stars.”
+                “A pocket-sized celestial music box that chimes a soothing lullaby from starlight.”
               </p>
               <div class="project-status-line">
                 <span class="status-indicator" id="radio-status-dot"></span>
@@ -134,7 +150,7 @@
             </div>
           </article>
 
-          <!-- PROJECT 002: MOONLIGHT BOTTLES -->
+          <!-- PROJECT 002: MIDNIGHT LANTERN & MOONLIGHT BOTTLES -->
           <article class="project-card project-bottle" id="project-moonlight">
             <div class="project-header">
               <span class="project-id">PROJECT 002</span>
@@ -143,19 +159,19 @@
 
             <div class="project-visual">
               <div class="bottle-stage" id="bottle-stage" data-glow="gold" data-lit="true">
-                <img src="assets/moonlight-bottle.svg" alt="Apothecary jar holding luminous bottled moonlight" class="project-art-img bottle-art-img">
                 <div class="bottle-glow-layer" id="bottle-glow-layer" aria-hidden="true"></div>
+                <img src="assets/images/midnight-lantern.png" alt="The Midnight Lantern glowing softly in the observatory" class="project-art-img bottle-art-img midnight-lantern-img">
               </div>
             </div>
 
             <div class="project-info">
-              <h2 class="project-title">Moonlight Bottles</h2>
+              <h2 class="project-title">Midnight Lantern & Moonlight Bottles</h2>
               <p class="project-desc">
-                “Little jars of bottled moonlight for dark and wobbly nights.”
+                “A glowing observatory lantern and jars of starlight for dark and wobbly nights.”
               </p>
 
               <!-- Color Glow Picker -->
-              <div class="bottle-palette-selector" role="radiogroup" aria-label="Select bottled moonlight glow tint">
+              <div class="bottle-palette-selector" role="radiogroup" aria-label="Select lantern starlight glow tint">
                 <span class="palette-label">Glow Hue:</span>
                 <button type="button" class="palette-swatch swatch-gold is-active" data-color="gold" role="radio" aria-checked="true" aria-label="Moon Gold glow"></button>
                 <button type="button" class="palette-swatch swatch-blush" data-color="blush" role="radio" aria-checked="false" aria-label="Star Blush glow"></button>
@@ -172,7 +188,7 @@
             <div class="project-controls">
               <button type="button" class="btn btn-secondary btn-full" id="btn-toggle-bottle" aria-pressed="true">
                 <span class="btn-icon" id="bottle-btn-icon">💡</span>
-                <span id="bottle-btn-label">Cork & Sleep (Turn Off)</span>
+                <span id="bottle-btn-label">Extinguish Lantern (Turn Off)</span>
               </button>
             </div>
           </article>

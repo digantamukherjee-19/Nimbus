@@ -13,6 +13,21 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Fredoka:wght@300..700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
+
+  <!-- Immediate Theme Initializer to prevent visual flash on page navigation -->
+  <script>
+    (function() {
+      try {
+        var savedTheme = localStorage.getItem('nimbus_theme');
+        if (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          savedTheme = 'dream';
+        }
+        if (savedTheme === 'dream') {
+          document.documentElement.setAttribute('data-theme', 'dream');
+        }
+      } catch(e) {}
+    })();
+  </script>
 </head>
 <body data-theme="day">
   <!-- Accessibility Skip Link -->
@@ -159,7 +174,7 @@
 
           <!-- Nimbus Character Art Box -->
           <div class="character-wrapper" id="character-wrapper">
-            <img src="assets/nimbus-character.svg" alt="Nimbus Moonwhisper, a tiny fluffy cloud spirit with rosy cheeks wearing a berry-colored nightcap with a moon brooch and holding a miniature brass telescope" class="character-img" id="nimbus-art">
+            <img src="assets/images/nimbus-character.png" alt="Nimbus, the Junior Dream Astronomer" class="character-img" id="nimbus-art">
             <div class="character-shadow" aria-hidden="true"></div>
           </div>
 

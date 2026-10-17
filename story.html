@@ -13,6 +13,21 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Fredoka:wght@300..700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
+
+  <!-- Immediate Theme Initializer to prevent visual flash on page navigation -->
+  <script>
+    (function() {
+      try {
+        var savedTheme = localStorage.getItem('nimbus_theme');
+        if (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          savedTheme = 'dream';
+        }
+        if (savedTheme === 'dream') {
+          document.documentElement.setAttribute('data-theme', 'dream');
+        }
+      } catch(e) {}
+    })();
+  </script>
 </head>
 <body data-theme="day">
   <!-- Accessibility Skip Link -->
@@ -89,6 +104,15 @@
           <h1 class="section-title" id="origin-title">Once upon a cloud.</h1>
           <p class="section-desc">Nimbus’s origin story told across three quiet storybook chapters.</p>
         </header>
+
+        <!-- Nimbus Narrator Greeting -->
+        <div class="story-narrator-card">
+          <img src="assets/images/nimbus-character.png" alt="Nimbus, the Junior Dream Astronomer" class="story-narrator-avatar">
+          <div class="story-narrator-info">
+            <span class="story-narrator-role">NARRATED BY NIMBUS MOONWHISPER</span>
+            <p class="story-narrator-quote">“These are three small memories from when I first learned how stars find their way home.”</p>
+          </div>
+        </div>
 
         <div class="story-chapters-container">
           <!-- CHAPTER 01: A LITTLE CLOUD -->
@@ -179,7 +203,7 @@
 
             <div class="chapter-visual">
               <div class="storybook-frame">
-                <img src="assets/observatory-dome.svg" alt="Cozy Midnight Observatory dome atop a fluffy cloud under crescent moon and stars" class="chapter-svg-img">
+                <img src="assets/images/observatory-dark.png" alt="The cozy Midnight Observatory atop a fluffy cloud under glowing stars and crescent moon" class="chapter-svg-img">
               </div>
             </div>
           </article>

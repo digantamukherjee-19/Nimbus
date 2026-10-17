@@ -290,6 +290,7 @@
   function applyTheme(theme, announceChange = true) {
     state.theme = theme;
     DOM.body.setAttribute('data-theme', theme);
+    document.documentElement.setAttribute('data-theme', theme);
 
     const isDream = theme === 'dream';
     if (DOM.themeToggle) {
@@ -579,17 +580,17 @@
 
       if (state.bottleLit) {
         if (DOM.bottleBtnIcon) DOM.bottleBtnIcon.textContent = '💡';
-        if (DOM.bottleBtnLabel) DOM.bottleBtnLabel.textContent = 'Cork & Sleep (Turn Off)';
+        if (DOM.bottleBtnLabel) DOM.bottleBtnLabel.textContent = 'Extinguish Lantern (Turn Off)';
         if (DOM.bottleStatusDot) DOM.bottleStatusDot.classList.add('is-lit');
         updateBottleStatusText();
         audio.playChime();
-        showToast('Bottle uncorked! Warm moonlight fills the room.', '💡');
+        showToast('Lantern lit! Warm starlight fills the observatory.', '💡');
       } else {
         if (DOM.bottleBtnIcon) DOM.bottleBtnIcon.textContent = '✨';
-        if (DOM.bottleBtnLabel) DOM.bottleBtnLabel.textContent = 'Uncork & Glow (Turn On)';
+        if (DOM.bottleBtnLabel) DOM.bottleBtnLabel.textContent = 'Light Lantern (Turn On)';
         if (DOM.bottleStatusDot) DOM.bottleStatusDot.classList.remove('is-lit');
-        if (DOM.bottleStatusText) DOM.bottleStatusText.textContent = 'State: Corked & Sleeping · Glow paused';
-        showToast('Bottle corked. Starlight safely resting inside.', '🌙');
+        if (DOM.bottleStatusText) DOM.bottleStatusText.textContent = 'State: Extinguished & Sleeping · Glow paused';
+        showToast('Lantern extinguished. Starlight safely resting inside.', '🌙');
       }
     });
 
