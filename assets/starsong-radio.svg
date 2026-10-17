@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 360" width="100%" height="100%" role="img" aria-label="Starsong Radio, a cozy celestial wooden music box with a brass star antenna and glowing dial">
+  <defs>
+    <linearGradient id="woodCabinet" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#734d38"/>
+      <stop offset="50%" stop-color="#5c3a28"/>
+      <stop offset="100%" stop-color="#46291a"/>
+    </linearGradient>
+
+    <linearGradient id="radioFaceplate" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff8eb"/>
+      <stop offset="100%" stop-color="#f6ebd7"/>
+    </linearGradient>
+
+    <linearGradient id="brassDial" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5e0a0"/>
+      <stop offset="60%" stop-color="#e7bf70"/>
+      <stop offset="100%" stop-color="#9a7629"/>
+    </linearGradient>
+
+    <radialGradient id="tunerGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffeebb" stop-opacity="0.9"/>
+      <stop offset="60%" stop-color="#e7bf70" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#f6ebd7" stop-opacity="0"/>
+    </radialGradient>
+
+    <filter id="musicBoxShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#5c4033" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Brass Star Antenna -->
+  <g class="radio-antenna">
+    <line x1="120" y1="110" x2="70" y2="25" stroke="#e7bf70" stroke-width="3" stroke-linecap="round"/>
+    <g transform="translate(62, 18) scale(0.9)">
+      <polygon points="10,0 13,7 20,10 13,13 10,20 7,13 0,10 7,7" fill="#e7bf70"/>
+      <circle cx="10" cy="10" r="2.5" fill="#ffffff"/>
+    </g>
+    <!-- Little radio signal waves -->
+    <path d="M50 15 C45 25 45 35 50 45" fill="none" stroke="#e7bf70" stroke-width="1.8" stroke-dasharray="2,4" opacity="0.6"/>
+    <path d="M42 8 C32 23 32 40 42 55" fill="none" stroke="#e7bf70" stroke-width="1.5" stroke-dasharray="3,4" opacity="0.4"/>
+  </g>
+
+  <!-- Main Wooden Radio Cabinet -->
+  <g filter="url(#musicBoxShadow)">
+    <!-- Base feet -->
+    <rect x="75" y="305" width="30" height="15" rx="5" fill="#3a2215"/>
+    <rect x="295" y="305" width="30" height="15" rx="5" fill="#3a2215"/>
+
+    <!-- Cabinet body -->
+    <rect x="50" y="105" width="300" height="205" rx="24" fill="url(#woodCabinet)" stroke="#3a2215" stroke-width="3"/>
+    <!-- Top Handle -->
+    <path d="M155 105 C155 85 245 85 245 105" fill="none" stroke="#e7bf70" stroke-width="4" stroke-linecap="round"/>
+    <rect x="150" y="102" width="10" height="8" rx="2" fill="#9a7629"/>
+    <rect x="240" y="102" width="10" height="8" rx="2" fill="#9a7629"/>
+
+    <!-- Cream Faceplate inset -->
+    <rect x="70" y="125" width="260" height="165" rx="16" fill="url(#radioFaceplate)" stroke="#46291a" stroke-width="2"/>
+  </g>
+
+  <!-- Left: Speaker Grille with Crescent Moon & Star Perforations -->
+  <g class="speaker-grille" transform="translate(85, 145)">
+    <circle cx="55" cy="55" r="48" fill="#ecdcc3" stroke="#bca487" stroke-width="1.5"/>
+    <!-- Crescent Moon cutout -->
+    <path d="M50 25 C32 35 32 75 50 85 C38 78 35 42 50 25 Z" fill="#a34063" opacity="0.85"/>
+    <!-- Perforation dots in concentric arcs -->
+    <circle cx="35" cy="45" r="2.5" fill="#7a5840"/>
+    <circle cx="30" cy="55" r="2.5" fill="#7a5840"/>
+    <circle cx="35" cy="65" r="2.5" fill="#7a5840"/>
+    <circle cx="70" cy="35" r="2.5" fill="#7a5840"/>
+    <circle cx="80" cy="45" r="2.5" fill="#7a5840"/>
+    <circle cx="85" cy="55" r="2.5" fill="#7a5840"/>
+    <circle cx="80" cy="65" r="2.5" fill="#7a5840"/>
+    <circle cx="70" cy="75" r="2.5" fill="#7a5840"/>
+    <!-- Central star cut -->
+    <polygon points="56,48 58,53 63,55 58,57 56,62 54,57 49,55 54,53" fill="#e7bf70"/>
+  </g>
+
+  <!-- Right: Tuner Dial & Display -->
+  <g class="tuner-section" transform="translate(205, 140)">
+    <!-- Backlit frequency window -->
+    <rect x="5" y="5" width="110" height="42" rx="8" fill="#fffdfa" stroke="#d5c2a3" stroke-width="1.5"/>
+    <rect x="8" y="8" width="104" height="36" rx="6" fill="url(#tunerGlow)"/>
+
+    <!-- Frequency lines & numbers -->
+    <text x="14" y="24" font-family="monospace" font-size="9" font-weight="bold" fill="#a34063">PLEIADES</text>
+    <text x="74" y="24" font-family="monospace" font-size="9" fill="#5c4033">92.4 FM</text>
+    <line x1="12" y1="32" x2="108" y2="32" stroke="#bda586" stroke-width="1"/>
+    <!-- Tuning needle -->
+    <line x1="48" y1="28" x2="48" y2="42" stroke="#d13f59" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Brass Volume & Tuning Dials -->
+    <!-- Large Tuning Dial -->
+    <g transform="translate(20, 85)">
+      <circle cx="18" cy="18" r="18" fill="url(#brassDial)" stroke="#7e5a1b" stroke-width="1.5"/>
+      <circle cx="18" cy="18" r="14" fill="#f0db99" stroke="#b08a38" stroke-width="1"/>
+      <line x1="18" y1="6" x2="18" y2="14" stroke="#7e5a1b" stroke-width="2.5" stroke-linecap="round"/>
+      <text x="2" y="44" font-family="sans-serif" font-size="7.5" font-weight="bold" fill="#734d38">TUNE</text>
+    </g>
+
+    <!-- Volume Dial -->
+    <g transform="translate(75, 85)">
+      <circle cx="18" cy="18" r="18" fill="url(#brassDial)" stroke="#7e5a1b" stroke-width="1.5"/>
+      <circle cx="18" cy="18" r="14" fill="#f0db99" stroke="#b08a38" stroke-width="1"/>
+      <line x1="18" y1="6" x2="18" y2="14" stroke="#7e5a1b" stroke-width="2.5" stroke-linecap="round"/>
+      <text x="4" y="44" font-family="sans-serif" font-size="7.5" font-weight="bold" fill="#734d38">VOL</text>
+    </g>
+  </g>
+
+  <!-- Floating Musical Notes (Animated during playback) -->
+  <g class="radio-notes" opacity="0.85">
+    <!-- Note 1 -->
+    <g class="float-note-1" transform="translate(325, 105)">
+      <text font-family="sans-serif" font-size="20" fill="#a34063">♪</text>
+    </g>
+    <!-- Note 2 -->
+    <g class="float-note-2" transform="translate(350, 75)">
+      <text font-family="sans-serif" font-size="24" fill="#e7bf70">♫</text>
+    </g>
+    <!-- Note 3 -->
+    <g class="float-note-3" transform="translate(290, 60)">
+      <text font-family="sans-serif" font-size="18" fill="#b64e74">♩</text>
+    </g>
+  </g>
+</svg>

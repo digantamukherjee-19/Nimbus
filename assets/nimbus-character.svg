@@ -1,0 +1,202 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%" role="img" aria-label="Nimbus Moonwhisper, a tiny fluffy cloud spirit wearing a berry-colored nightcap and holding a miniature brass telescope">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="cloudBodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#fff8f2"/>
+      <stop offset="100%" stop-color="#f5e9df"/>
+    </linearGradient>
+
+    <linearGradient id="capGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b64e74"/>
+      <stop offset="50%" stop-color="#a34063"/>
+      <stop offset="100%" stop-color="#802b48"/>
+    </linearGradient>
+
+    <linearGradient id="brassGrad" x1="0%" y1="0%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#f8e3a2"/>
+      <stop offset="40%" stop-color="#e7bf70"/>
+      <stop offset="80%" stop-color="#b88a38"/>
+      <stop offset="100%" stop-color="#7e5a1b"/>
+    </linearGradient>
+
+    <linearGradient id="lensGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e3f3ff" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#89c2f5" stop-opacity="0.6"/>
+    </linearGradient>
+
+    <radialGradient id="starGlowYellow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fffde8"/>
+      <stop offset="50%" stop-color="#e7bf70"/>
+      <stop offset="100%" stop-color="#e7bf70" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="dreamAura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff8eb" stop-opacity="0.7"/>
+      <stop offset="50%" stop-color="#fcedd9" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#fff8f1" stop-opacity="0"/>
+    </radialGradient>
+
+    <filter id="cozyShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#5c4033" flood-opacity="0.12"/>
+    </filter>
+
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Ambient Dream Glow behind character -->
+  <circle cx="300" cy="320" r="230" fill="url(#dreamAura)"/>
+
+  <!-- Orbital Starlight Ring -->
+  <ellipse cx="300" cy="330" rx="240" ry="120" fill="none" stroke="#e7bf70" stroke-width="1.5" stroke-dasharray="6,8" opacity="0.45" transform="rotate(-8 300 330)"/>
+
+  <!-- Background Orbiting Decorative Stars -->
+  <g class="orbiting-star-1" transform="translate(85, 260)">
+    <polygon points="12,0 15,9 24,12 15,15 12,24 9,15 0,12 9,9" fill="#e7bf70" opacity="0.8"/>
+  </g>
+  <g class="orbiting-star-2" transform="translate(480, 210)">
+    <polygon points="16,0 20,12 32,16 20,20 16,32 12,20 0,16 12,12" fill="#e7bf70" opacity="0.85"/>
+    <circle cx="16" cy="16" r="3" fill="#ffffff"/>
+  </g>
+  <g class="orbiting-star-3" transform="translate(490, 420)">
+    <polygon points="10,0 12,7 20,10 12,13 10,20 8,13 0,10 8,7" fill="#f5dce4" opacity="0.8"/>
+  </g>
+  <g class="orbiting-star-4" transform="translate(110, 410)">
+    <polygon points="8,0 10,6 16,8 10,10 8,16 6,10 0,8 6,6" fill="#e7e5f4" opacity="0.75"/>
+  </g>
+
+  <!-- Main Cloud Spirit Body (Layered Puffs for Organic Softness) -->
+  <g filter="url(#cozyShadow)">
+    <!-- Back Puffs -->
+    <circle cx="210" cy="330" r="85" fill="url(#cloudBodyGrad)"/>
+    <circle cx="390" cy="330" r="85" fill="url(#cloudBodyGrad)"/>
+    <circle cx="300" cy="270" r="95" fill="url(#cloudBodyGrad)"/>
+    <circle cx="230" cy="390" r="75" fill="url(#cloudBodyGrad)"/>
+    <circle cx="370" cy="390" r="75" fill="url(#cloudBodyGrad)"/>
+    <circle cx="300" cy="390" r="85" fill="url(#cloudBodyGrad)"/>
+
+    <!-- Left Fluff Arm -->
+    <path d="M185 360 C150 375 145 425 180 435 C205 442 225 410 215 385 Z" fill="#fffaf5"/>
+
+    <!-- Right Fluff Arm holding telescope -->
+    <path d="M385 365 C415 375 425 425 390 435 C365 442 355 415 365 385 Z" fill="#fffaf5"/>
+
+    <!-- Bottom Cloud Ruffles (Contoured smooth base) -->
+    <path d="M175 410 C160 445 200 475 240 460 C265 475 305 478 335 460 C365 478 405 465 425 430 C445 395 440 350 410 320 C425 280 395 235 345 235 C325 235 310 242 300 250 C290 242 275 235 255 235 C205 235 175 280 190 320 C160 350 155 395 175 410 Z" fill="url(#cloudBodyGrad)"/>
+  </g>
+
+  <!-- Belly Soft Highlights -->
+  <ellipse cx="300" cy="395" rx="80" ry="35" fill="#ffffff" opacity="0.6"/>
+
+  <!-- Cheerful Facial Features -->
+  <!-- Rosy Blush Cheeks -->
+  <ellipse cx="230" cy="355" rx="20" ry="12" fill="#f5a8b8" opacity="0.65"/>
+  <ellipse cx="370" cy="355" rx="20" ry="12" fill="#f5a8b8" opacity="0.65"/>
+
+  <!-- Left Eye: Warm, Gentle, Sparkly Dark Brown -->
+  <g class="nimbus-eye-left">
+    <ellipse cx="252" cy="330" rx="13" ry="15" fill="#442a22"/>
+    <!-- Catchlights -->
+    <circle cx="248" cy="324" r="5" fill="#ffffff"/>
+    <circle cx="257" cy="335" r="2.5" fill="#ffffff"/>
+  </g>
+
+  <!-- Right Eye: Warm, Gentle, Sparkly Dark Brown -->
+  <g class="nimbus-eye-right">
+    <ellipse cx="348" cy="330" rx="13" ry="15" fill="#442a22"/>
+    <!-- Catchlights -->
+    <circle cx="344" cy="324" r="5" fill="#ffffff"/>
+    <circle cx="353" cy="335" r="2.5" fill="#ffffff"/>
+  </g>
+
+  <!-- Gentle Arched Eyebrows -->
+  <path d="M240 308 Q252 302 264 307" stroke="#6b4c3b" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <path d="M336 307 Q348 302 360 308" stroke="#6b4c3b" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+
+  <!-- Sweet Little Smiling Mouth -->
+  <path d="M288 355 Q300 367 312 355" stroke="#5c382b" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <path d="M293 358 Q300 364 307 358" stroke="#d97587" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+  <!-- Tiny Sneeze Star Sprout Spot (at top-right of mouth) -->
+  <g class="sneeze-star-anchor" opacity="0.9" transform="translate(325, 342) scale(0.6)">
+    <polygon points="10,0 13,7 20,10 13,13 10,20 7,13 0,10 7,7" fill="#e7bf70"/>
+    <circle cx="10" cy="10" r="3" fill="#ffffff"/>
+  </g>
+
+  <!-- Cozy Nightcap (Draped playfully over Nimbus's head) -->
+  <g class="nimbus-nightcap">
+    <!-- Cap Base Cuff (Fluffy warm lavender-cream roll) -->
+    <path d="M220 255 C220 235 380 235 380 255 C380 270 220 270 220 255 Z" fill="#e7e5f4" stroke="#c9b6e4" stroke-width="2"/>
+    <ellipse cx="300" cy="255" rx="80" ry="14" fill="#f4f1fb"/>
+
+    <!-- Cap Body Cone curving to the left -->
+    <path d="M230 250 C240 180 210 130 140 120 C110 115 90 140 100 165 C115 200 170 215 225 245 Z" fill="url(#capGrad)" filter="url(#cozyShadow)"/>
+
+    <!-- Decorative Hand-Stitched Gold Dashes on Nightcap -->
+    <path d="M215 235 C175 210 135 185 125 150 C120 135 130 128 145 130 C190 138 230 180 240 230" fill="none" stroke="#fce4a6" stroke-width="2" stroke-dasharray="4,6" opacity="0.8"/>
+
+    <!-- Crescent Moon Brooch pinned to Cap Cuff -->
+    <g transform="translate(325, 238) scale(0.85)">
+      <circle cx="14" cy="14" r="14" fill="#e7bf70" filter="url(#softGlow)"/>
+      <circle cx="19" cy="10" r="12" fill="#b64e74"/>
+      <circle cx="11" cy="16" r="2.5" fill="#fff8d6"/>
+    </g>
+
+    <!-- Dangling Tassel Pompom at tip of cap -->
+    <g transform="translate(90, 155)">
+      <circle cx="12" cy="12" r="16" fill="#fffdfa" stroke="#e7e5f4" stroke-width="2"/>
+      <circle cx="12" cy="12" r="12" fill="#f8e7ee"/>
+      <!-- Soft yarn texture -->
+      <path d="M6 12 Q12 6 18 12" stroke="#d9adc0" stroke-width="1.5" fill="none"/>
+      <path d="M6 15 Q12 20 18 15" stroke="#d9adc0" stroke-width="1.5" fill="none"/>
+    </g>
+  </g>
+
+  <!-- Miniature Brass Telescope held gently by Nimbus -->
+  <g class="nimbus-telescope" transform="translate(370, 340) rotate(-18)">
+    <!-- Main Telescope Cylinder -->
+    <rect x="0" y="20" width="85" height="24" rx="4" fill="url(#brassGrad)" stroke="#7e5a1b" stroke-width="1.5"/>
+    <!-- Focus Rings -->
+    <rect x="65" y="18" width="12" height="28" rx="2" fill="#d4a34b" stroke="#5c4015" stroke-width="1"/>
+    <rect x="25" y="19" width="6" height="26" rx="1" fill="#fbe8ab"/>
+    <line x1="45" y1="20" x2="45" y2="44" stroke="#7e5a1b" stroke-width="1"/>
+    
+    <!-- Eyepiece end -->
+    <rect x="-10" y="24" width="12" height="16" rx="2" fill="#9e6e22" stroke="#5c4015" stroke-width="1"/>
+    
+    <!-- Objective Lens Hood -->
+    <path d="M85 16 L110 12 L110 52 L85 48 Z" fill="url(#brassGrad)" stroke="#7e5a1b" stroke-width="1.5"/>
+    <ellipse cx="110" cy="32" rx="4" ry="20" fill="url(#lensGlow)" stroke="#98cbfa" stroke-width="1.5"/>
+    <!-- Lens Reflection Streak -->
+    <line x1="109" y1="20" x2="111" y2="28" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Tiny Brass Tripod Legs folded under -->
+    <line x1="45" y1="44" x2="35" y2="70" stroke="#7e5a1b" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="50" y1="44" x2="60" y2="70" stroke="#7e5a1b" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- Front Cloud Paw wrapping gently over telescope -->
+  <circle cx="395" cy="385" r="16" fill="#ffffff" stroke="#f0e2d5" stroke-width="1.5"/>
+
+  <!-- Floating Sparkles & Wishes around Nimbus -->
+  <!-- Tiny Wish Star 1 -->
+  <g class="sparkle-1" transform="translate(180, 210) scale(0.8)">
+    <polygon points="12,0 15,8 24,12 15,16 12,24 9,16 0,12 9,8" fill="#e7bf70"/>
+    <circle cx="12" cy="12" r="3" fill="#ffffff"/>
+  </g>
+  <!-- Tiny Wish Star 2 -->
+  <g class="sparkle-2" transform="translate(420, 270) scale(0.65)">
+    <polygon points="12,0 15,8 24,12 15,16 12,24 9,16 0,12 9,8" fill="#e7bf70"/>
+    <circle cx="12" cy="12" r="3" fill="#ffffff"/>
+  </g>
+  <!-- Soft Mint Stardust -->
+  <circle cx="150" cy="340" r="4" fill="#d8e5d5"/>
+  <!-- Soft Blush Stardust -->
+  <circle cx="450" cy="360" r="3.5" fill="#f5dce4"/>
+  <!-- Gold Stardust -->
+  <circle cx="210" cy="460" r="3" fill="#e7bf70"/>
+  <circle cx="370" cy="460" r="4" fill="#e7bf70"/>
+</svg>
