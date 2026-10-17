@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Nimbus — The Midnight Observatory</title>
+  <meta name="description" content="Discover the biography, personality, and field journal of Nimbus Moonwhisper, Junior Dream Astronomer.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+  <!-- Google Fonts: DM Serif Display & Fredoka with system fallbacks -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Fredoka:wght@300..700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="day">
+  <!-- Accessibility Skip Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Ambient Starfield for interactive background stars -->
+  <div id="ambient-starfield" class="ambient-starfield" aria-hidden="true"></div>
+
+  <!-- Permanently Fixed Header and Navigation -->
+  <header class="site-header" id="site-header">
+    <div class="header-container">
+      <a href="index.html" class="brand-link" aria-label="Nimbus's Observatory - Home">
+        <span class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="28" height="28" fill="none">
+            <circle cx="16" cy="16" r="14" fill="var(--color-blush)" opacity="0.6"/>
+            <path d="M14 6 C8 8 7 18 13 24 C10 22 9 14 15 9 C17 7 19 6.5 21 6.5 C18 6 16 6 14 6 Z" fill="var(--color-berry)"/>
+            <polygon points="21,12 22.5,15.5 26,17 22.5,18.5 21,22 19.5,18.5 16,17 19.5,15.5" fill="var(--color-gold)"/>
+          </svg>
+        </span>
+        <span class="brand-text">
+          <span class="brand-name">Nimbus Moonwhisper</span>
+          <span class="brand-sub">The Midnight Observatory</span>
+        </span>
+      </a>
+
+      <!-- Mobile Menu Toggle -->
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation menu">
+        <span class="hamburger-box" aria-hidden="true">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </span>
+      </button>
+
+      <!-- Main Navigation Menu (4 primary options) -->
+      <nav class="site-nav" id="site-nav" aria-label="Main Navigation">
+        <ul class="nav-list">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="about.html" class="nav-link is-active" aria-current="page">About Nimbus</a></li>
+          <li><a href="projects.html" class="nav-link">Projects</a></li>
+          <li><a href="story.html" class="nav-link">Story</a></li>
+        </ul>
+
+        <!-- Action Controls: Compact Theme & Sound Toggle on desktop -->
+        <div class="nav-controls">
+          <button type="button" class="btn-control btn-control-compact" id="theme-toggle" aria-pressed="false" aria-label="Switch between Day Mode and Dream Mode" title="Toggle Day / Dream Mode">
+            <span class="btn-control-icon" id="theme-icon" aria-hidden="true">🌙</span>
+            <span class="btn-control-label" id="theme-label">Dream Mode</span>
+          </button>
+
+          <button type="button" class="btn-control btn-control-compact" id="sound-toggle" aria-pressed="false" aria-label="Toggle celestial sound effects and music" title="Toggle Sound On / Off">
+            <span class="btn-control-icon" id="sound-icon" aria-hidden="true">🔇</span>
+            <span class="btn-control-label" id="sound-label">Sound Off</span>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Live Announcer for screen readers -->
+  <div id="live-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Toast Notification Bar for wishes & actions -->
+  <aside id="toast-shelf" class="toast-shelf" aria-live="polite" aria-atomic="true"></aside>
+
+  <main id="main-content">
+    <!-- ========================================================
+         CHARACTER PROFILE & BIOGRAPHY
+         ======================================================== -->
+    <section class="section profile-section" id="profile" aria-labelledby="profile-title">
+      <div class="container">
+        <header class="section-header">
+          <span class="section-eyebrow">FIELD JOURNAL · VOL. 1</span>
+          <h1 class="section-title" id="profile-title">Head in the clouds. Stars in my pockets.</h1>
+          <p class="section-desc">Meet Nimbus Moonwhisper — a sleepy cloud spirit with a big telescope, a very soft heart, and an observatory above the stars.</p>
+        </header>
+
+        <!-- Character Dossier Card -->
+        <div class="status-console-card" style="margin-bottom: 3rem;">
+          <div class="console-header">
+            <span class="console-led" aria-hidden="true"></span>
+            <span class="console-title">CHARACTER DOSSIER · OBSERVATORY REGISTRY NO. 01</span>
+            <span class="console-badge">CUMULUS-SPIRIT</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: auto 1fr; gap: clamp(1.5rem, 3vw, 2.5rem); align-items: center; flex-wrap: wrap;">
+            <div style="width: 140px; height: 140px; background: var(--bg-elevated); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px dashed var(--border-subtle); flex-shrink: 0; margin: 0 auto;">
+              <img src="assets/nimbus-character.svg" alt="Nimbus portrait" style="width: 120px; height: auto;">
+            </div>
+            <div>
+              <h2 style="font-family: var(--font-serif); font-size: 1.85rem; color: var(--text-primary); margin-bottom: 0.5rem;">Nimbus Moonwhisper</h2>
+              <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem;">
+                Nimbus was born on the quietest cloud in the sky. As the observatory’s sole <strong>Junior Dream Astronomer</strong>, Nimbus dedicates each night to listening for quiet whispers from sleepy dreamers, weaving them into constellations, and ensuring every wanderer finds their way home.
+              </p>
+              <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                <span class="earlyweb-badge">🌱 Personality: Curious & Imaginative</span>
+                <span class="earlyweb-badge">💤 Trait: Often Sleepy</span>
+                <span class="earlyweb-badge">🧸 Heart: Gentle & Kind</span>
+                <span class="earlyweb-badge">🔭 Flaw: A Little Forgetful</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Three Journal Field Observation Cards -->
+        <div class="profile-cards-grid">
+          <!-- Card 1: What am I? -->
+          <article class="journal-card card-mint">
+            <div class="card-pin" aria-hidden="true">📌</div>
+            <div class="card-icon-bubble" aria-hidden="true">
+              <svg viewBox="0 0 48 48" width="36" height="36" fill="none">
+                <path d="M14 34 C9 34 6 30 6 25 C6 20 10 17 14 17 C15 13 19 10 24 10 C29 10 33 13 34 17 C38 17 42 20 42 25 C42 30 38 34 33 34 Z" fill="var(--color-berry)" opacity="0.15"/>
+                <path d="M14 32 C10 32 8 28 8 24 C8 20 11 17 15 17 C16 13 20 11 24 11 C28 11 32 13 33 17 C37 17 40 20 40 24 C40 28 37 32 33 32 Z" stroke="var(--color-berry)" stroke-width="2.5" fill="#ffffff"/>
+                <path d="M24 26 C24 26 21 23 19.5 21.5 C18 20 18 18 19.5 17 C21 16 22.5 17 24 19 C25.5 17 27 16 28.5 17 C30 18 30 20 28.5 21.5 Z" fill="var(--color-berry)"/>
+              </svg>
+            </div>
+            <span class="card-tag">OBSERVATION 01</span>
+            <h2 class="card-heading">What am I?</h2>
+            <p class="card-body">
+              A small cloud spirit with a big telescope and a very soft heart.
+            </p>
+            <div class="card-footnote">
+              <span>Specimen:</span> <code>Spirito-Cumulus</code>
+            </div>
+          </article>
+
+          <!-- Card 2: What do I do? -->
+          <article class="journal-card card-blush">
+            <div class="card-pin" aria-hidden="true">📎</div>
+            <div class="card-icon-bubble" aria-hidden="true">
+              <svg viewBox="0 0 48 48" width="36" height="36" fill="none">
+                <line x1="12" y1="36" x2="22" y2="20" stroke="var(--color-berry)" stroke-width="2" stroke-dasharray="3,3"/>
+                <line x1="22" y1="20" x2="36" y2="14" stroke="var(--color-berry)" stroke-width="2" stroke-dasharray="3,3"/>
+                <line x1="22" y1="20" x2="34" y2="32" stroke="var(--color-berry)" stroke-width="2" stroke-dasharray="3,3"/>
+                <circle cx="12" cy="36" r="4" fill="var(--color-gold)" stroke="var(--color-berry)" stroke-width="2"/>
+                <circle cx="22" cy="20" r="5" fill="var(--color-gold)" stroke="var(--color-berry)" stroke-width="2"/>
+                <circle cx="36" cy="14" r="4.5" fill="var(--color-gold)" stroke="var(--color-berry)" stroke-width="2"/>
+                <circle cx="34" cy="32" r="4" fill="var(--color-gold)" stroke="var(--color-berry)" stroke-width="2"/>
+              </svg>
+            </div>
+            <span class="card-tag">OBSERVATION 02</span>
+            <h2 class="card-heading">What do I do?</h2>
+            <p class="card-body">
+              I chart constellations, collect wishes, and make the night feel friendly.
+            </p>
+            <div class="card-footnote">
+              <span>Duty:</span> <code>Starlight Navigation</code>
+            </div>
+          </article>
+
+          <!-- Card 3: One odd quirk? -->
+          <article class="journal-card card-lavender">
+            <div class="card-pin" aria-hidden="true">⭐</div>
+            <div class="card-icon-bubble" aria-hidden="true">
+              <svg viewBox="0 0 48 48" width="36" height="36" fill="none">
+                <polygon points="24,6 28,18 40,20 30,28 33,40 24,33 15,40 18,28 8,20 20,18" fill="var(--color-gold)" stroke="var(--color-berry)" stroke-width="2"/>
+                <circle cx="24" cy="24" r="3" fill="#ffffff"/>
+              </svg>
+            </div>
+            <span class="card-tag">OBSERVATION 03</span>
+            <h2 class="card-heading">One odd quirk</h2>
+            <p class="card-body">
+              I sneeze a little star whenever someone tells me a happy story.
+            </p>
+            <div class="card-action-slot">
+              <button type="button" class="btn btn-sm btn-outline" id="btn-tell-story">
+                <span>📖 Tell Nimbus a happy story</span>
+              </button>
+            </div>
+          </article>
+        </div>
+
+        <!-- Section: The Astronomer's Toolkit -->
+        <div style="margin-top: 4.5rem;">
+          <header class="section-header" style="margin-bottom: 2rem;">
+            <span class="section-eyebrow">FIELD EQUIPMENT & HABITS</span>
+            <h2 class="section-title">The Astronomer’s Toolkit.</h2>
+            <p class="section-desc">A few essential instruments kept inside the Midnight Observatory.</p>
+          </header>
+
+          <div class="equipment-grid">
+            <div class="equipment-card">
+              <span class="equipment-icon" aria-hidden="true">🔭</span>
+              <h3 class="equipment-title">Miniature Brass Telescope</h3>
+              <p class="equipment-desc">
+                Crafted from hand-turned brass and moonlight glass. Frequently misplaced under fluffy cloud blankets, but always polished with stardust before twilight.
+              </p>
+            </div>
+
+            <div class="equipment-card">
+              <span class="equipment-icon" aria-hidden="true">📓</span>
+              <h3 class="equipment-title">Starlight Field Notebook</h3>
+              <p class="equipment-desc">
+                Bound in lavender linen. Contains star coordinates, bedtime lullaby chords, recipe notes for warm chamomile dew, and sketches of curious comets.
+              </p>
+            </div>
+
+            <div class="equipment-card">
+              <span class="equipment-icon" aria-hidden="true">✨</span>
+              <h3 class="equipment-title">Chamber of Warm Wishes</h3>
+              <p class="equipment-desc">
+                A cozy wooden shelving nook where whispered hopes from sleepy earthbound dreamers are safely organized and distilled into bright guiding constellations.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Next Steps Banner -->
+        <div class="page-nav-banner">
+          <div class="page-nav-text">
+            <h3>Curious to see Nimbus's inventions?</h3>
+            <p>Listen to Starsong Radio, uncork glowing bottles, or chart dream deliveries.</p>
+          </div>
+          <div class="page-nav-actions">
+            <a href="projects.html" class="btn btn-primary">
+              <span>Explore Projects →</span>
+            </a>
+            <a href="story.html" class="btn btn-secondary">
+              <span>Read the Origin Story →</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================
+       EASTER EGG MODAL DIALOG
+       ======================================================== -->
+  <div class="easter-modal" id="easter-modal" role="dialog" aria-modal="true" aria-labelledby="easter-title" hidden>
+    <div class="easter-backdrop" id="easter-backdrop"></div>
+    <div class="easter-card">
+      <button type="button" class="easter-close-btn" id="easter-close-btn" aria-label="Close secret message">✕</button>
+      <div class="easter-icon" aria-hidden="true">🌟</div>
+      <span class="easter-eyebrow">NIMBUS'S SECRET COMPASS</span>
+      <h2 class="easter-title" id="easter-title">You found a hidden star!</h2>
+      <p class="easter-quote">
+        “Even your smallest wish matters. Keep looking up. ♡”
+      </p>
+      <p class="easter-sub">
+        Nimbus sneezed five glittering stars in joy just for you.
+      </p>
+      <button type="button" class="btn btn-primary" id="easter-dismiss-btn">
+        <span>Thank you, Nimbus!</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       CELESTIAL FOOTER
+       ======================================================== -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-top">
+        <div class="footer-constellation" aria-hidden="true">
+          <svg viewBox="0 0 240 40" width="240" height="40" fill="none">
+            <line x1="20" y1="20" x2="60" y2="10" stroke="var(--color-berry)" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <line x1="60" y1="10" x2="110" y2="25" stroke="var(--color-berry)" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <line x1="110" y1="25" x2="160" y2="15" stroke="var(--color-berry)" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <line x1="160" y1="15" x2="220" y2="28" stroke="var(--color-berry)" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <circle cx="20" cy="20" r="3.5" fill="var(--color-gold)"/>
+            <circle cx="60" cy="10" r="4.5" fill="var(--color-gold)"/>
+            <circle cx="110" cy="25" r="3" fill="var(--color-gold)"/>
+            <circle cx="160" cy="15" r="5" fill="var(--color-gold)"/>
+            <circle cx="220" cy="28" r="3.5" fill="var(--color-gold)"/>
+          </svg>
+        </div>
+
+        <a href="#main-content" class="btn-back-to-top" id="btn-back-to-top" aria-label="Return to top of page">
+          <span>↑ Back to top</span>
+        </a>
+      </div>
+
+      <div class="footer-main">
+        <p class="footer-signoff">
+          Handmade in the clouds by <strong>Nimbus Moonwhisper</strong> ♡
+        </p>
+        <p class="footer-tagline">
+          “No wish is too small to be a star.”
+        </p>
+      </div>
+
+      <div class="footer-badges">
+        <span class="earlyweb-badge">
+          <span class="badge-dot"></span>
+          <span>Observatory Logbook Guest #0042</span>
+        </span>
+        <span class="earlyweb-badge">
+          <span>☁️ haX.baby · Baby's First Website 2026</span>
+        </span>
+        <span class="earlyweb-badge">
+          <span>Best viewed under blanket forts with warm tea</span>
+        </span>
+      </div>
+
+      <div class="footer-legal">
+        <p>© 2026 Nimbus Moonwhisper. Built with HTML5, CSS3, Web Audio & Vanilla JS. Dedicated to dreamers everywhere.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Main JavaScript File -->
+  <script src="script.js"></script>
+</body>
+</html>

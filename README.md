@@ -23,89 +23,66 @@ Nimbus was born on the quietest cloud in the sky. One evening, a little lost sta
 
 ---
 
-## 🚀 Implemented Features
+## 🧭 Multi-Page Architecture & Navigation
 
-### 1. Character Introduction & Interactive Stage
-- **Meet Nimbus Hero Section:** Eyebrow star log coordinates, bold headline, storybook intro, and primary CTAs.
-- **Interactive Character Stage:** Scalable vector character art with gentle floating physics, orbital starlight rings, status chips, and subtle cursor parallax tracking on desktop.
-- **"Make a tiny Wish" Action:** Spawns animated floating wish stars within the observatory, increments the live telemetry counter, and plays a synthesized chime.
+The website features an independent multi-page layout with a **permanently fixed navbar** that stays anchored at the top of the viewport across all pages. Each navigation option loads a dedicated, self-contained HTML page:
 
-### 2. Three Distinct Portfolio Projects
-1. **Project 001 — Starsong Radio:**
-   - A pocket-sized music box synthesized entirely with the **Web Audio API**.
-   - Plays a calming 8-note pentatonic lullaby with gentle attack/decay envelopes.
-   - Synchronized CSS sound wave visualizer bars and broadcast status indicator.
-   - Respects the global audio toggle and never autoplays.
-2. **Project 002 — Moonlight Bottles:**
-   - Vintage apothecary jar capturing bottled moonlight for dark and wobbly nights.
-   - Interactive cork toggle between glowing and sleeping states.
-   - 4 selectable starlight hues: *Moon Gold*, *Star Blush*, *Dream Lavender*, and *Mint Glow*.
-   - Includes full textual state readouts for colorblind accessibility.
-3. **Project 003 — Dream Delivery Map:**
-   - SVG constellation sky chart connecting **Cloud Bay → Little Moon → Home**.
-   - Animated shooting star travels the flight path with step-by-step waypoint activations.
-   - Updates observatory telemetry deliveries upon arrival.
-   - Accessible reduced-motion fallback for instant comfort.
+1. **Home (`index.html`):**
+   - The main hero section with Nimbus's interactive character illustration.
+   - Welcome message and introduction to the Midnight Observatory.
+   - Primary calls to action: *“Meet Nimbus”*, *“Explore Projects”*, and *“Read the Story”*.
+   - Observatory at a glance preview cards linking to the other pages.
+   - Live telemetry status console and hidden Easter egg star.
+2. **About Nimbus (`about.html`):**
+   - Nimbus's complete character dossier and field journal.
+   - Personality traits: curious, sleepy, gentle, and forgetful.
+   - Three field-note observation cards with the interactive *"Tell Nimbus a happy story"* star-sneeze button.
+   - Astronomer's pocket toolkit (brass telescope, starlight logbook, chamber of wishes).
+3. **Projects (`projects.html`):**
+   - Three interactive project showcases:
+     - **Project 001 — Starsong Radio:** Web Audio API pocket lullaby synthesizer with animated sound wave visualizer bars.
+     - **Project 002 — Moonlight Bottles:** Glowing apothecary jar with clickable cork on/off toggle and 4 selectable hue swatches (*Moon Gold*, *Star Blush*, *Dream Lavender*, *Mint Glow*).
+     - **Project 003 — Dream Delivery Map:** SVG constellation sky chart (*Cloud Bay → Little Moon → Home*) with shooting star route animation and waypoint announcements.
+4. **Story (`story.html`):**
+   - Nimbus's origin story told across three quiet storybook scenes:
+     - *Chapter 01: A Little Cloud*
+     - *Chapter 02: The Lost Star*
+     - *Chapter 03: The Midnight Observatory*
+   - Illustrated scenes, constellation coordinates, and gentle animations.
+   - The Starry Wish Wall & Guestbook with quick inspiration prompts and pre-seeded notes.
 
-### 3. Origin Story — Interactive Scroll Chapters
-- Three storybook scenes under 150 words each:
-  - *Chapter 01: A Tiny Beginning*
-  - *Chapter 02: The First Wish*
-  - *Chapter 03: The Observatory*
-- Gentle reveal animations triggered via `IntersectionObserver`.
+---
 
-### 4. Field Journal Character Sheet
-- Three field-note cards detailing Nimbus’s identity, duties, and quirks.
-- Interactive **“Tell Nimbus a happy story”** button that makes Nimbus sneeze a sparkling star with a cheerful sound effect!
+## 📌 Permanently Fixed Navbar Features
 
-### 5. Day Mode & Dream Mode Themes
-- Built with CSS Custom Properties adhering to the hackathon design system:
-  - **Day Mode:** Warm cream (`#fff8f1`), rich berry (`#a34063`), cocoa brown (`#5c4033`), soft blush (`#f5dce4`), and moon gold (`#e7bf70`).
-  - **Dream Mode:** Deep midnight purple (`#201c34`), elevated card panel (`#302941`), soft lavender (`#44304e`), and moonlight accents (`#f4c7dc`).
-- Persists user selection in `localStorage` with system dark-mode detection fallback.
-
-### 6. Centralized Web Audio Sound System
-- Default state: **Muted** (as required for web accessibility).
-- Accessible Sound Toggle button in the sticky navigation header.
-- Synthesized tones (sine-wave chimes, sparkly arpeggios, and lullaby).
-- Clean oscillator garbage collection with zero memory leaks.
-
-### 7. Hidden Easter Egg — Nimbus's Secret
-- Discover a tiny glittering star in the hero constellation.
-- Tapping the star 5 times reveals Nimbus’s secret message:
-  > *“Even your smallest wish matters. Keep looking up. ♡”*
-- Accompanied by a celebratory fanfare and cascading stardust.
-- Fully keyboard-accessible dialog with `Escape` key dismissal.
-
-### 8. The Starry Wall & Guestbook
-- Local persistent wish wall where stargazers can whisper their name and a wish.
-- Features quick prompt inspiration pills (*"Peaceful sleep"*, *"Gentle courage"*, *"Warm tea"*).
-- Pre-seeded with cozy messages from animal friends (Pip the Field Mouse, Stella the Night Owl).
-- Robust HTML escaping to prevent XSS injection.
-
-### 9. Throttled Desktop Cursor Trail
-- Starlight particles trail the cursor on desktop mice.
-- Throttled to ~45ms, strictly limited to 20 concurrent particles, and promptly removed.
-- Automatically disabled on touch devices and for visitors who prefer reduced motion.
+- **Fixed Viewport Lock:** Anchored at the top using `position: fixed; top: 0; left: 0; right: 0; z-index: 1000;`.
+- **Content Clearance:** Added `padding-top: var(--header-height);` on `body` to ensure the navbar never obscures headings, buttons, or illustrations.
+- **Active Page Highlight:** Highlights the current page with a distinct blush pill, berry font color, and bottom border indicator (`is-active` and `aria-current="page"`).
+- **Click-Only Navigation:** Navigation changes only occur when explicitly clicking a link. Scrolling up or down never reveals another page.
+- **Compact Desktop Controls:** Day/Dream theme toggle and Sound On/Off toggle are positioned as compact, circular icon buttons on desktop, expanding into labeled buttons in the mobile drawer.
+- **Mobile Responsive Hamburger:** Collapsible drawer that automatically closes upon link selection or `Escape` key press.
 
 ---
 
 ## 🛠️ Technology Stack
 
-- **HTML5:** Semantic landmark architecture (`header`, `main`, `section`, `nav`, `footer`), ARIA live regions, skip links.
-- **CSS3:** Custom properties (CSS variables), CSS Grid, Flexbox, responsive typography via `clamp()`, keyframe animations, `@media (prefers-reduced-motion: reduce)`.
-- **Vanilla JavaScript (ES6+):** Zero external runtime dependencies. Native Web Audio API, IntersectionObserver, and LocalStorage.
-- **Scalable Vector Graphics (SVG):** 100% custom vector illustrations crafted specifically for this project (crisp at all screen scales and 0% risk of broken image paths).
+- **HTML5:** 4 independent semantic pages (`index.html`, `about.html`, `projects.html`, `story.html`), ARIA live regions, skip links.
+- **CSS3:** Custom properties (CSS variables), CSS Grid, Flexbox, responsive typography via `clamp()`, fixed header lock, `@media (prefers-reduced-motion: reduce)`.
+- **Vanilla JavaScript (ES6+):** Multi-page null-safe state manager, native **Web Audio API** synthesizer, `localStorage` persistence for themes, sound settings, and telemetry.
+- **Scalable Vector Graphics (SVG):** 100% custom vector illustrations crafted specifically for this project (crisp at all screen scales with 0% risk of broken images).
 
 ---
 
 ## 📂 Project Structure
 
-```
+```text
 /
-├── index.html                   # Master semantic webpage
-├── style.css                    # Design system, themes & animations
-├── script.js                    # Web Audio, interactions & state manager
+├── index.html                   # Home page & Observatory preview
+├── about.html                   # About Nimbus & Field Journal
+├── projects.html                # 3 Interactive Starlight Experiments
+├── story.html                   # Origin Story & Starry Wish Wall
+├── style.css                    # Shared design system, fixed header & themes
+├── script.js                    # Shared Web Audio & multi-page state manager
 ├── README.md                    # Project documentation & biography
 └── assets/
     ├── favicon.svg              # Nimbus sleeping cloud favicon
@@ -119,10 +96,10 @@ Nimbus was born on the quietest cloud in the sky. One evening, a little lost sta
 
 ## 💻 How to Run Locally
 
-Because this project is built entirely with standard web technologies, you do not need to install complex build tools or large node_modules.
+Because this project is built entirely with standard web technologies, you do not need to install complex build tools.
 
 ### Option 1: Direct File Open
-Simply double-click `index.html` in your file explorer to open it in any modern browser.
+Double-click `index.html` in your file explorer to open it in any modern browser.
 
 ### Option 2: Using Node.js (Recommended for full Web Audio / LocalStorage experience)
 Run a local static server from the project directory:
@@ -133,13 +110,13 @@ npx serve .
 # or
 npx http-server -p 8080
 ```
-Open `http://localhost:8080` in your browser.
+Then navigate to `http://localhost:8080` in your browser.
 
 ---
 
 ## ☁️ Deployment Instructions
 
-The site is ready for static deployment on any modern hosting provider:
+The site is ready for static deployment on any hosting provider:
 
 ### Deploying to GitHub Pages
 1. Push this repository to GitHub.
@@ -151,7 +128,7 @@ The site is ready for static deployment on any modern hosting provider:
 ```bash
 npx vercel
 ```
-Or import the repository directly in the Vercel dashboard as an "Other" / static project.
+Or import the repository directly in the Vercel dashboard as a static website.
 
 ---
 

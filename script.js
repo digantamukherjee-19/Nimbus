@@ -2,8 +2,8 @@
  * NIMBUS MOONWHISPER — THE MIDNIGHT OBSERVATORY
  * Master Interactive Controller
  *
- * Built with Vanilla JavaScript & Web Audio API
- * Accessible, performant, responsive, and cozy.
+ * Multi-page friendly, accessible, performant, responsive, and cozy.
+ * Web Audio API synthesizer, state management across pages via localStorage.
  */
 
 'use strict';
@@ -27,7 +27,7 @@
     prefersReducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches
   };
 
-  // DOM Elements
+  // DOM Elements (queried safely per page)
   const DOM = {
     body: document.body,
     themeToggle: document.getElementById('theme-toggle'),
@@ -292,16 +292,24 @@
     DOM.body.setAttribute('data-theme', theme);
 
     const isDream = theme === 'dream';
-    DOM.themeToggle.setAttribute('aria-pressed', isDream ? 'true' : 'false');
+    if (DOM.themeToggle) {
+      DOM.themeToggle.setAttribute('aria-pressed', isDream ? 'true' : 'false');
+    }
 
-    if (isDream) {
-      DOM.themeIcon.textContent = '☀️';
-      DOM.themeLabel.textContent = 'Day Mode';
-      if (announceChange) showToast('Dream Mode activated. Goodnight, stargazer.', '🌙');
-    } else {
-      DOM.themeIcon.textContent = '🌙';
-      DOM.themeLabel.textContent = 'Dream Mode';
-      if (announceChange) showToast('Day Mode activated. Morning clouds are soft.', '☀️');
+    if (DOM.themeIcon) {
+      DOM.themeIcon.textContent = isDream ? '☀️' : '🌙';
+    }
+
+    if (DOM.themeLabel) {
+      DOM.themeLabel.textContent = isDream ? 'Day Mode' : 'Dream Mode';
+    }
+
+    if (announceChange) {
+      if (isDream) {
+        showToast('Dream Mode activated. Goodnight, stargazer.', '🌙');
+      } else {
+        showToast('Day Mode activated. Morning clouds are soft.', '☀️');
+      }
     }
 
     try {
@@ -316,33 +324,100 @@
   }
 
   // =========================================================================
-  // 5. SOUND SYSTEM TOGGLE
+  // 5. SOUND SYSTEM TOGGLE & PERSISTENCE
   // =========================================================================
+
+  function initSound() {
+    let savedSound = false;
+    try {
+      savedSound = localStorage.getItem('nimbus_sound') === 'true';
+    } catch (_) {}
+
+    state.soundEnabled = savedSound;
+    updateSoundUI(false);
+  }
+
+  function updateSoundUI(showNotification = true) {
+    if (DOM.soundToggle) {
+      DOM.soundToggle.setAttribute('aria-pressed', state.soundEnabled ? 'true' : 'false');
+    }
+    if (DOM.soundIcon) {
+      DOM.soundIcon.textContent = state.soundEnabled ? '🔔' : '🔇';
+    }
+    if (DOM.soundLabel) {
+      DOM.soundLabel.textContent = state.soundEnabled ? 'Sound On' : 'Sound Off';
+    }
+
+    if (showNotification) {
+      if (state.soundEnabled) {
+        showToast('Celestial audio enabled! Soft bells and lullabies unlocked.', '🔔');
+      } else {
+        showToast('Sound muted. Peaceful quiet restored.', '🔇');
+      }
+    }
+  }
 
   function toggleSound() {
     state.soundEnabled = !state.soundEnabled;
-    DOM.soundToggle.setAttribute('aria-pressed', state.soundEnabled ? 'true' : 'false');
+    try {
+      localStorage.setItem('nimbus_sound', state.soundEnabled ? 'true' : 'false');
+    } catch (_) {}
 
     if (state.soundEnabled) {
-      DOM.soundIcon.textContent = '🔔';
-      DOM.soundLabel.textContent = 'Sound On';
       audio.init();
       audio.playChime();
-      showToast('Celestial audio enabled! Soft bells and lullabies unlocked.', '🔔');
+      updateSoundUI(true);
     } else {
-      DOM.soundIcon.textContent = '🔇';
-      DOM.soundLabel.textContent = 'Sound Off';
       audio.stopLullaby();
       stopLullabyUI();
-      showToast('Sound muted. Peaceful quiet restored.', '🔇');
+      updateSoundUI(true);
     }
   }
 
   // =========================================================================
-  // 6. MOBILE NAVIGATION
+  // 6. TELEMETRY SYNCHRONIZATION
+  // =========================================================================
+
+  function initTelemetry() {
+    try {
+      const savedStars = localStorage.getItem('nimbus_stars_mapped');
+      if (savedStars) state.starsMapped = parseInt(savedStars, 10) || 128;
+
+      const savedDeliveries = localStorage.getItem('nimbus_dream_deliveries');
+      if (savedDeliveries) state.dreamDeliveries = parseInt(savedDeliveries, 10) || 7;
+    } catch (_) {}
+
+    if (DOM.statStarsMapped) DOM.statStarsMapped.textContent = state.starsMapped;
+    if (DOM.statDreamDeliveries) {
+      DOM.statDreamDeliveries.textContent = String(state.dreamDeliveries).padStart(2, '0');
+    }
+  }
+
+  function incrementStarsMapped() {
+    state.starsMapped += 1;
+    if (DOM.statStarsMapped) DOM.statStarsMapped.textContent = state.starsMapped;
+    try {
+      localStorage.setItem('nimbus_stars_mapped', state.starsMapped);
+    } catch (_) {}
+  }
+
+  function incrementDreamDeliveries() {
+    state.dreamDeliveries += 1;
+    if (DOM.statDreamDeliveries) {
+      DOM.statDreamDeliveries.textContent = String(state.dreamDeliveries).padStart(2, '0');
+    }
+    try {
+      localStorage.setItem('nimbus_dream_deliveries', state.dreamDeliveries);
+    } catch (_) {}
+  }
+
+  // =========================================================================
+  // 7. MOBILE NAVIGATION
   // =========================================================================
 
   function initNav() {
+    if (!DOM.navToggle || !DOM.siteNav) return;
+
     DOM.navToggle.addEventListener('click', () => {
       const isOpen = DOM.siteNav.classList.toggle('is-open');
       DOM.navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
@@ -365,16 +440,18 @@
   }
 
   // =========================================================================
-  // 7. HERO WISH MAKER & NIMBUS PARALLAX
+  // 8. HERO WISH MAKER & NIMBUS PARALLAX
   // =========================================================================
 
   function initHero() {
-    DOM.heroWishBtn.addEventListener('click', () => {
-      makeWish();
-    });
+    if (DOM.heroWishBtn) {
+      DOM.heroWishBtn.addEventListener('click', () => {
+        makeWish();
+      });
+    }
 
     // Subtle pointer movement on desktop
-    if (!state.prefersReducedMotion && window.matchMedia('(pointer: fine)').matches) {
+    if (DOM.heroStage && DOM.characterWrapper && !state.prefersReducedMotion && window.matchMedia('(pointer: fine)').matches) {
       DOM.heroStage.addEventListener('mousemove', (e) => {
         const rect = DOM.heroStage.getBoundingClientRect();
         const x = (e.clientX - rect.left) / rect.width - 0.5;
@@ -390,65 +467,57 @@
   }
 
   function makeWish() {
-    // 1. Create a floating star element inside hero stage
-    const star = document.createElement('span');
-    star.className = 'spawned-wish-star';
-    star.textContent = '✦';
+    if (DOM.heroWishLayer) {
+      const star = document.createElement('span');
+      star.className = 'spawned-wish-star';
+      star.textContent = '✦';
 
-    // Random placement around character
-    const left = Math.floor(Math.random() * 70 + 15);
-    const top = Math.floor(Math.random() * 60 + 20);
+      const left = Math.floor(Math.random() * 70 + 15);
+      const top = Math.floor(Math.random() * 60 + 20);
 
-    star.style.left = `${left}%`;
-    star.style.top = `${top}%`;
+      star.style.left = `${left}%`;
+      star.style.top = `${top}%`;
 
-    DOM.heroWishLayer.appendChild(star);
+      DOM.heroWishLayer.appendChild(star);
 
-    // Limit active spawned stars to prevent memory/DOM buildup
-    const currentStars = DOM.heroWishLayer.querySelectorAll('.spawned-wish-star');
-    if (currentStars.length > 15) {
-      DOM.heroWishLayer.removeChild(currentStars[0]);
+      const currentStars = DOM.heroWishLayer.querySelectorAll('.spawned-wish-star');
+      if (currentStars.length > 15) {
+        DOM.heroWishLayer.removeChild(currentStars[0]);
+      }
+
+      setTimeout(() => {
+        if (star.parentNode) {
+          star.parentNode.removeChild(star);
+        }
+      }, 3000);
     }
 
-    // Remove star after animation completes
-    setTimeout(() => {
-      if (star.parentNode) {
-        star.parentNode.removeChild(star);
-      }
-    }, 3000);
-
-    // 2. Play gentle chime
     audio.playChime();
-
-    // 3. Increment telemetry stats
-    state.starsMapped += 1;
-    DOM.statStarsMapped.textContent = state.starsMapped;
-
-    // 4. Show friendly notification
+    incrementStarsMapped();
     showToast('A tiny wish was chartered into the constellation sky! ✨', '⭐');
   }
 
   // =========================================================================
-  // 8. ODD QUIRK: SNEEZE A STAR
+  // 9. ODD QUIRK: SNEEZE A STAR
   // =========================================================================
 
   function initQuirk() {
+    if (!DOM.tellStoryBtn) return;
+
     DOM.tellStoryBtn.addEventListener('click', () => {
       audio.playSparkleSneeze();
-
-      // Trigger star burst around Nimbus
-      makeWish();
-
-      // Friendly character reaction
+      incrementStarsMapped();
       showToast('Achoo! 🌟 Nimbus sneezed a sparkling star in joy! "What a lovely story!"', '⭐');
     });
   }
 
   // =========================================================================
-  // 9. PROJECT 001: STARSONG RADIO
+  // 10. PROJECT 001: STARSONG RADIO
   // =========================================================================
 
   function initStarsongRadio() {
+    if (!DOM.toggleLullabyBtn) return;
+
     DOM.toggleLullabyBtn.addEventListener('click', () => {
       if (state.lullabyPlaying) {
         stopLullaby();
@@ -464,13 +533,13 @@
     }
 
     state.lullabyPlaying = true;
-    DOM.toggleLullabyBtn.setAttribute('aria-pressed', 'true');
-    DOM.lullabyBtnIcon.textContent = '⏹️';
-    DOM.lullabyBtnLabel.textContent = 'Stop lullaby';
+    if (DOM.toggleLullabyBtn) DOM.toggleLullabyBtn.setAttribute('aria-pressed', 'true');
+    if (DOM.lullabyBtnIcon) DOM.lullabyBtnIcon.textContent = '⏹️';
+    if (DOM.lullabyBtnLabel) DOM.lullabyBtnLabel.textContent = 'Stop lullaby';
 
-    DOM.projectStarsong.classList.add('is-active-lullaby');
-    DOM.radioStatusDot.classList.add('is-playing');
-    DOM.radioStatusText.textContent = 'Broadcasting: Pleiades Lullaby (88.5 FM)';
+    if (DOM.projectStarsong) DOM.projectStarsong.classList.add('is-active-lullaby');
+    if (DOM.radioStatusDot) DOM.radioStatusDot.classList.add('is-playing');
+    if (DOM.radioStatusText) DOM.radioStatusText.textContent = 'Broadcasting: Pleiades Lullaby (88.5 FM)';
 
     showToast('Playing Nimbus’s pocket lullaby... Listen closely. 🎵', '🎶');
 
@@ -487,66 +556,70 @@
 
   function stopLullabyUI() {
     state.lullabyPlaying = false;
-    DOM.toggleLullabyBtn.setAttribute('aria-pressed', 'false');
-    DOM.lullabyBtnIcon.textContent = '🎵';
-    DOM.lullabyBtnLabel.textContent = 'Play my lullaby';
+    if (DOM.toggleLullabyBtn) DOM.toggleLullabyBtn.setAttribute('aria-pressed', 'false');
+    if (DOM.lullabyBtnIcon) DOM.lullabyBtnIcon.textContent = '🎵';
+    if (DOM.lullabyBtnLabel) DOM.lullabyBtnLabel.textContent = 'Play my lullaby';
 
-    DOM.projectStarsong.classList.remove('is-active-lullaby');
-    DOM.radioStatusDot.classList.remove('is-playing');
-    DOM.radioStatusText.textContent = 'Tuned to Pleiades 92.4 FM · Standing by';
+    if (DOM.projectStarsong) DOM.projectStarsong.classList.remove('is-active-lullaby');
+    if (DOM.radioStatusDot) DOM.radioStatusDot.classList.remove('is-playing');
+    if (DOM.radioStatusText) DOM.radioStatusText.textContent = 'Tuned to Pleiades 92.4 FM · Standing by';
   }
 
   // =========================================================================
-  // 10. PROJECT 002: MOONLIGHT BOTTLES
+  // 11. PROJECT 002: MOONLIGHT BOTTLES
   // =========================================================================
 
   function initMoonlightBottles() {
+    if (!DOM.toggleBottleBtn || !DOM.bottleStage) return;
+
     DOM.toggleBottleBtn.addEventListener('click', () => {
       state.bottleLit = !state.bottleLit;
       DOM.bottleStage.setAttribute('data-lit', state.bottleLit ? 'true' : 'false');
       DOM.toggleBottleBtn.setAttribute('aria-pressed', state.bottleLit ? 'true' : 'false');
 
       if (state.bottleLit) {
-        DOM.bottleBtnIcon.textContent = '💡';
-        DOM.bottleBtnLabel.textContent = 'Cork & Sleep (Turn Off)';
-        DOM.bottleStatusDot.classList.add('is-lit');
+        if (DOM.bottleBtnIcon) DOM.bottleBtnIcon.textContent = '💡';
+        if (DOM.bottleBtnLabel) DOM.bottleBtnLabel.textContent = 'Cork & Sleep (Turn Off)';
+        if (DOM.bottleStatusDot) DOM.bottleStatusDot.classList.add('is-lit');
         updateBottleStatusText();
         audio.playChime();
         showToast('Bottle uncorked! Warm moonlight fills the room.', '💡');
       } else {
-        DOM.bottleBtnIcon.textContent = '✨';
-        DOM.bottleBtnLabel.textContent = 'Uncork & Glow (Turn On)';
-        DOM.bottleStatusDot.classList.remove('is-lit');
-        DOM.bottleStatusText.textContent = 'State: Corked & Sleeping · Glow paused';
+        if (DOM.bottleBtnIcon) DOM.bottleBtnIcon.textContent = '✨';
+        if (DOM.bottleBtnLabel) DOM.bottleBtnLabel.textContent = 'Uncork & Glow (Turn On)';
+        if (DOM.bottleStatusDot) DOM.bottleStatusDot.classList.remove('is-lit');
+        if (DOM.bottleStatusText) DOM.bottleStatusText.textContent = 'State: Corked & Sleeping · Glow paused';
         showToast('Bottle corked. Starlight safely resting inside.', '🌙');
       }
     });
 
-    DOM.paletteSwatches.forEach((swatch) => {
-      swatch.addEventListener('click', () => {
-        DOM.paletteSwatches.forEach((s) => {
-          s.classList.remove('is-active');
-          s.setAttribute('aria-checked', 'false');
+    if (DOM.paletteSwatches && DOM.paletteSwatches.length > 0) {
+      DOM.paletteSwatches.forEach((swatch) => {
+        swatch.addEventListener('click', () => {
+          DOM.paletteSwatches.forEach((s) => {
+            s.classList.remove('is-active');
+            s.setAttribute('aria-checked', 'false');
+          });
+
+          swatch.classList.add('is-active');
+          swatch.setAttribute('aria-checked', 'true');
+
+          state.bottleColor = swatch.getAttribute('data-color');
+          DOM.bottleStage.setAttribute('data-glow', state.bottleColor);
+
+          if (!state.bottleLit) {
+            DOM.toggleBottleBtn.click();
+          } else {
+            updateBottleStatusText();
+            audio.playChime();
+          }
         });
-
-        swatch.classList.add('is-active');
-        swatch.setAttribute('aria-checked', 'true');
-
-        state.bottleColor = swatch.getAttribute('data-color');
-        DOM.bottleStage.setAttribute('data-glow', state.bottleColor);
-
-        // Ensure bottle is turned on when selecting a new color
-        if (!state.bottleLit) {
-          DOM.toggleBottleBtn.click();
-        } else {
-          updateBottleStatusText();
-          audio.playChime();
-        }
       });
-    });
+    }
   }
 
   function updateBottleStatusText() {
+    if (!DOM.bottleStatusText) return;
     const colorNames = {
       gold: 'Moon Gold · 100% Warmth',
       blush: 'Star Blush · Gentle Solace',
@@ -558,10 +631,12 @@
   }
 
   // =========================================================================
-  // 11. PROJECT 003: DREAM DELIVERY MAP
+  // 12. PROJECT 003: DREAM DELIVERY MAP
   // =========================================================================
 
   function initDreamDelivery() {
+    if (!DOM.sendDreamBtn || !DOM.travelingStar) return;
+
     DOM.sendDreamBtn.addEventListener('click', () => {
       if (state.isDeliveringDream) return;
       deliverDream();
@@ -571,7 +646,7 @@
   function deliverDream() {
     state.isDeliveringDream = true;
     DOM.sendDreamBtn.disabled = true;
-    DOM.mapStatusDot.classList.add('is-playing');
+    if (DOM.mapStatusDot) DOM.mapStatusDot.classList.add('is-playing');
 
     const waypoints = [
       {
@@ -597,28 +672,27 @@
       }
     ];
 
-    // Reduced motion shortcut
     if (state.prefersReducedMotion) {
-      waypoints.forEach((wp) => wp.chip.classList.add('is-active'));
+      waypoints.forEach((wp) => {
+        if (wp.chip) wp.chip.classList.add('is-active');
+      });
       DOM.travelingStar.setAttribute('transform', waypoints[2].coord);
       finishDelivery(waypoints[2]);
       return;
     }
 
-    // Step 1: Cloud Bay
     executeWaypointStep(waypoints, 0);
   }
 
   function executeWaypointStep(waypoints, index) {
     const wp = waypoints[index];
 
-    // Update steps visual
     [DOM.stepBay, DOM.stepMoon, DOM.stepHome].forEach((c, idx) => {
-      c.classList.toggle('is-active', idx <= index);
+      if (c) c.classList.toggle('is-active', idx <= index);
     });
 
-    DOM.travelingStar.setAttribute('transform', wp.coord);
-    DOM.mapStatusText.textContent = wp.status;
+    if (DOM.travelingStar) DOM.travelingStar.setAttribute('transform', wp.coord);
+    if (DOM.mapStatusText) DOM.mapStatusText.textContent = wp.status;
     audio.playChime();
 
     if (index === 0) {
@@ -638,22 +712,22 @@
 
   function finishDelivery(finalWp) {
     showToast(finalWp.toast, '✨');
-    state.dreamDeliveries += 1;
-    DOM.statDreamDeliveries.textContent = String(state.dreamDeliveries).padStart(2, '0');
+    incrementDreamDeliveries();
 
     setTimeout(() => {
       state.isDeliveringDream = false;
-      DOM.sendDreamBtn.disabled = false;
-      DOM.mapStatusDot.classList.remove('is-playing');
+      if (DOM.sendDreamBtn) DOM.sendDreamBtn.disabled = false;
+      if (DOM.mapStatusDot) DOM.mapStatusDot.classList.remove('is-playing');
     }, 1500);
   }
 
   // =========================================================================
-  // 12. ORIGIN STORY: INTERSECTION OBSERVER SCROLL
+  // 13. ORIGIN STORY: INTERSECTION OBSERVER SCROLL
   // =========================================================================
 
   function initStoryChapters() {
     const chapters = document.querySelectorAll('.story-chapter');
+    if (chapters.length === 0) return;
 
     if ('IntersectionObserver' in window && !state.prefersReducedMotion) {
       const observer = new IntersectionObserver(
@@ -664,7 +738,7 @@
             }
           });
         },
-        { threshold: 0.2 }
+        { threshold: 0.15 }
       );
 
       chapters.forEach((ch) => observer.observe(ch));
@@ -674,7 +748,7 @@
   }
 
   // =========================================================================
-  // 13. GUESTBOOK & WISH WALL
+  // 14. GUESTBOOK & WISH WALL
   // =========================================================================
 
   const defaultWishes = [
@@ -696,30 +770,35 @@
   ];
 
   function initGuestbook() {
+    if (!DOM.wishForm || !DOM.wishesList) return;
+
     let wishes = loadWishes();
     renderWishes(wishes);
 
-    // Character counter
-    DOM.wishTextInput.addEventListener('input', () => {
-      DOM.charCounter.textContent = DOM.wishTextInput.value.length;
-    });
-
-    // Quick Inspiration Prompts
-    DOM.quickPromptBtns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const promptText = btn.getAttribute('data-text');
-        DOM.wishTextInput.value = promptText;
-        DOM.charCounter.textContent = promptText.length;
-        DOM.wishTextInput.focus();
+    if (DOM.wishTextInput && DOM.charCounter) {
+      DOM.wishTextInput.addEventListener('input', () => {
+        DOM.charCounter.textContent = DOM.wishTextInput.value.length;
       });
-    });
+    }
 
-    // Form submission
+    if (DOM.quickPromptBtns) {
+      DOM.quickPromptBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const promptText = btn.getAttribute('data-text');
+          if (DOM.wishTextInput) {
+            DOM.wishTextInput.value = promptText;
+            if (DOM.charCounter) DOM.charCounter.textContent = promptText.length;
+            DOM.wishTextInput.focus();
+          }
+        });
+      });
+    }
+
     DOM.wishForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const author = DOM.wishAuthorInput.value.trim();
-      const text = DOM.wishTextInput.value.trim();
+      const author = DOM.wishAuthorInput ? DOM.wishAuthorInput.value.trim() : '';
+      const text = DOM.wishTextInput ? DOM.wishTextInput.value.trim() : '';
 
       if (!author || !text) {
         showToast('Please whisper your name and a sweet wish first!', '✍️');
@@ -736,16 +815,12 @@
       saveWishes(wishes);
       renderWishes(wishes);
 
-      // Increment stats
-      state.starsMapped += 1;
-      DOM.statStarsMapped.textContent = state.starsMapped;
+      incrementStarsMapped();
 
-      // Reset form
-      DOM.wishAuthorInput.value = '';
-      DOM.wishTextInput.value = '';
-      DOM.charCounter.textContent = '0';
+      if (DOM.wishAuthorInput) DOM.wishAuthorInput.value = '';
+      if (DOM.wishTextInput) DOM.wishTextInput.value = '';
+      if (DOM.charCounter) DOM.charCounter.textContent = '0';
 
-      // Feedback
       audio.playSparkleSneeze();
       showToast('Your wish has been pinned to Nimbus’s Starry Wall! 🌟', '⭐');
     });
@@ -768,8 +843,11 @@
   }
 
   function renderWishes(wishes) {
+    if (!DOM.wishesList) return;
     DOM.wishesList.innerHTML = '';
-    DOM.wishCountPill.textContent = `${wishes.length} wishes recorded`;
+    if (DOM.wishCountPill) {
+      DOM.wishCountPill.textContent = `${wishes.length} wishes recorded`;
+    }
 
     wishes.forEach((w) => {
       const item = document.createElement('div');
@@ -786,10 +864,12 @@
   }
 
   // =========================================================================
-  // 14. EASTER EGG — NIMBUS'S SECRET
+  // 15. EASTER EGG — NIMBUS'S SECRET
   // =========================================================================
 
   function initEasterEgg() {
+    if (!DOM.easterEggStar || !DOM.easterModal) return;
+
     DOM.easterEggStar.addEventListener('click', () => {
       state.easterEggTaps += 1;
 
@@ -802,10 +882,9 @@
       }
     });
 
-    // Close buttons & backdrop
-    DOM.easterCloseBtn.addEventListener('click', closeEasterEgg);
-    DOM.easterDismissBtn.addEventListener('click', closeEasterEgg);
-    DOM.easterBackdrop.addEventListener('click', closeEasterEgg);
+    if (DOM.easterCloseBtn) DOM.easterCloseBtn.addEventListener('click', closeEasterEgg);
+    if (DOM.easterDismissBtn) DOM.easterDismissBtn.addEventListener('click', closeEasterEgg);
+    if (DOM.easterBackdrop) DOM.easterBackdrop.addEventListener('click', closeEasterEgg);
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !DOM.easterModal.hasAttribute('hidden')) {
@@ -819,23 +898,22 @@
     audio.playEasterEggFanfare();
 
     DOM.easterModal.removeAttribute('hidden');
-    DOM.easterDismissBtn.focus();
+    if (DOM.easterDismissBtn) DOM.easterDismissBtn.focus();
 
-    // Spawn celebration sparkles
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 8; i++) {
       setTimeout(() => {
         makeWish();
-      }, i * 150);
+      }, i * 160);
     }
   }
 
   function closeEasterEgg() {
-    DOM.easterModal.setAttribute('hidden', '');
-    DOM.easterEggStar.focus();
+    if (DOM.easterModal) DOM.easterModal.setAttribute('hidden', '');
+    if (DOM.easterEggStar) DOM.easterEggStar.focus();
   }
 
   // =========================================================================
-  // 15. SPARKLE CURSOR TRAIL (DESKTOP BONUS)
+  // 16. SPARKLE CURSOR TRAIL (DESKTOP BONUS)
   // =========================================================================
 
   function initCursorTrail() {
@@ -858,7 +936,6 @@
 
       document.body.appendChild(particle);
 
-      // Clean up promptly
       setTimeout(() => {
         if (particle.parentNode) {
           particle.parentNode.removeChild(particle);
@@ -868,7 +945,7 @@
   }
 
   // =========================================================================
-  // 16. AMBIENT BACKGROUND STARS
+  // 17. AMBIENT BACKGROUND STARS
   // =========================================================================
 
   function initAmbientStars() {
@@ -898,26 +975,31 @@
   }
 
   // =========================================================================
-  // 17. BACK TO TOP
+  // 18. BACK TO TOP
   // =========================================================================
 
   function initBackToTop() {
+    if (!DOM.btnBackToTop) return;
+
     DOM.btnBackToTop.addEventListener('click', (e) => {
       e.preventDefault();
       window.scrollTo({
         top: 0,
         behavior: 'smooth'
       });
-      DOM.heroWishBtn.focus();
+      const firstHeading = document.querySelector('h1, h2');
+      if (firstHeading) firstHeading.focus();
     });
   }
 
   // =========================================================================
-  // 18. INITIALIZATION BOOTSTRAP
+  // 19. INITIALIZATION BOOTSTRAP
   // =========================================================================
 
   function boot() {
     initTheme();
+    initSound();
+    initTelemetry();
     initNav();
     initHero();
     initQuirk();
@@ -931,9 +1013,12 @@
     initAmbientStars();
     initBackToTop();
 
-    // Event listener bindings
-    DOM.themeToggle.addEventListener('click', toggleTheme);
-    DOM.soundToggle.addEventListener('click', toggleSound);
+    if (DOM.themeToggle) {
+      DOM.themeToggle.addEventListener('click', toggleTheme);
+    }
+    if (DOM.soundToggle) {
+      DOM.soundToggle.addEventListener('click', toggleSound);
+    }
 
     console.log(
       '%c✦ Nimbus Moonwhisper — The Midnight Observatory loaded peacefully. Good dreams start small! ♡',
@@ -941,7 +1026,6 @@
     );
   }
 
-  // Start on DOM ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);
   } else {
