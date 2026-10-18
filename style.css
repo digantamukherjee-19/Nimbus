@@ -528,6 +528,34 @@ body[data-theme="dream"] .btn-lullaby-global.is-playing-music {
   50% { transform: scale(1.6); opacity: 1; }
 }
 
+/* Owner Profile Navbar Button */
+.nav-owner-btn {
+  text-decoration: none;
+}
+
+.nav-owner-btn svg {
+  display: block;
+  transition: transform var(--transition-fast);
+}
+
+.nav-owner-btn:hover svg {
+  transform: scale(1.1);
+}
+
+.nav-owner-btn.is-active {
+  background-color: var(--color-berry) !important;
+  color: #ffffff !important;
+  border-color: var(--color-berry) !important;
+  box-shadow: 0 2px 8px rgba(163, 64, 99, 0.3) !important;
+}
+
+body[data-theme="dream"] .nav-owner-btn.is-active {
+  background-color: var(--color-berry) !important;
+  color: #201c34 !important;
+  border-color: var(--color-berry) !important;
+  box-shadow: 0 0 12px rgba(244, 199, 220, 0.4) !important;
+}
+
 /* Mobile Hamburger button */
 .nav-toggle {
   display: none;
@@ -2563,3 +2591,406 @@ body[data-theme="dream"] .btn-back-to-top:hover {
     justify-content: center;
   }
 }
+
+/* ==========================================================================
+   16. OWNER PROFILE PAGE: DIGANTA MUKHERJEE
+   ========================================================================== */
+
+.owner-section {
+  padding: var(--spacing-xxl) 0;
+  min-height: calc(100vh - var(--header-height));
+  background-color: transparent;
+}
+
+.owner-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Main Owner Showcase Card */
+.owner-showcase-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: clamp(1.75rem, 4vw, 3rem);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(8px);
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color var(--transition-med), box-shadow var(--transition-med);
+}
+
+.owner-hero-layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: clamp(1.75rem, 4vw, 3rem);
+  align-items: center;
+}
+
+/* Circular Profile Frame */
+.owner-avatar-container {
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.owner-avatar-frame {
+  width: clamp(160px, 22vw, 210px);
+  height: clamp(160px, 22vw, 210px);
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 14px 32px rgba(92, 64, 51, 0.16), 0 0 24px rgba(232, 168, 124, 0.25);
+  background: var(--bg-surface);
+  flex-shrink: 0;
+  margin: 0 auto;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
+  cursor: pointer;
+}
+
+body[data-theme="dream"] .owner-avatar-frame {
+  border-color: rgba(244, 199, 220, 0.45);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.6), 0 0 28px rgba(244, 199, 220, 0.28);
+}
+
+.owner-avatar-frame:hover {
+  transform: scale(1.04);
+  box-shadow: 0 18px 42px rgba(92, 64, 51, 0.24), 0 0 32px rgba(232, 168, 124, 0.45);
+}
+
+body[data-theme="dream"] .owner-avatar-frame:hover {
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.75), 0 0 36px rgba(244, 199, 220, 0.45);
+}
+
+.owner-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  display: block;
+}
+
+/* Owner Identity & Typography */
+.owner-identity {
+  display: flex;
+  flex-direction: column;
+}
+
+.owner-badge-tag {
+  display: inline-block;
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-berry);
+  background: var(--color-blush);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 0.6rem;
+}
+
+body[data-theme="dream"] .owner-badge-tag {
+  background: var(--bg-elevated);
+}
+
+.owner-name {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+  line-height: 1.2;
+}
+
+.owner-subtitle {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-berry);
+  margin-bottom: 1.1rem;
+}
+
+.owner-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+/* Content Grid: About Me & Skills */
+.owner-content-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.75rem;
+  margin-bottom: 2rem;
+}
+
+.owner-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: clamp(1.5rem, 3vw, 2rem);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.owner-card:hover {
+  border-color: var(--color-blush-border);
+  box-shadow: var(--shadow-md);
+}
+
+.owner-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1.5px dashed var(--border-subtle);
+  padding-bottom: 0.85rem;
+}
+
+.owner-card-icon {
+  font-size: 1.5rem;
+}
+
+.owner-card-title {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  color: var(--text-primary);
+}
+
+.owner-about-text {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius-lg);
+  border-left: 3.5px solid var(--color-berry);
+  font-style: normal;
+}
+
+.owner-section-intro {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+
+/* Skills Badges Grid */
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.skill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  cursor: default;
+}
+
+.skill-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  display: inline-block;
+}
+
+.skill-badge:hover {
+  border-color: var(--color-berry);
+  background: var(--color-blush);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(163, 64, 99, 0.15);
+}
+
+body[data-theme="dream"] .skill-badge:hover {
+  background: var(--bg-elevated);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Social Cards */
+.socials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.social-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.15rem 1.4rem;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.social-card:hover {
+  border-color: var(--color-berry);
+  background: var(--color-blush);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+body[data-theme="dream"] .social-card:hover {
+  background: var(--bg-elevated);
+}
+
+.social-card:focus-visible {
+  outline: 2.5px solid var(--color-berry);
+  outline-offset: 3px;
+}
+
+.social-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-subtle);
+  flex-shrink: 0;
+  transition: transform var(--transition-fast), color var(--transition-fast);
+  color: var(--color-berry);
+}
+
+.social-card:hover .social-icon-wrapper {
+  transform: scale(1.1);
+  border-color: var(--color-berry);
+}
+
+.social-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex-grow: 1;
+}
+
+.social-card-title {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--text-primary);
+}
+
+.social-card-handle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.social-arrow {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  transition: transform var(--transition-fast), color var(--transition-fast);
+}
+
+.social-card:hover .social-arrow {
+  color: var(--color-berry);
+  transform: translate(2px, -2px);
+}
+
+/* Owner Bridge Card to Return to Observatory */
+.owner-bridge-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-surface) 100%);
+  border: 1.5px dashed var(--color-berry);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem 2.25rem;
+  margin-top: 2rem;
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(8px);
+}
+
+.bridge-content {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex: 1;
+  min-width: 260px;
+}
+
+.bridge-sparkle {
+  font-size: 2.25rem;
+}
+
+.bridge-title {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.bridge-desc {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.bridge-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Responsive Rules for Owner Page */
+@media (max-width: 768px) {
+  .owner-hero-layout {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .owner-badge-tag {
+    align-self: center;
+  }
+
+  .owner-tags-row {
+    justify-content: center;
+  }
+
+  .owner-content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .owner-bridge-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .bridge-content {
+    flex-direction: column;
+  }
+
+  .bridge-actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .bridge-actions .btn {
+    width: 100%;
+  }
+}
+

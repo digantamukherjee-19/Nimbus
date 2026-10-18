@@ -1,149 +1,171 @@
-# Nimbus Moonwhisper — The Midnight Observatory ☁️✨
+# Nimbus Moonwhisper — The Midnight Observatory
 
 > *“Good dreams start small.”*
 
-A cozy, nostalgic character portfolio and interactive web experience created for the **“Baby’s First Website” Hackathon by haX.baby**.
+Welcome to **The Midnight Observatory**, an enchanting, cozy, and interactive character portfolio website handcrafted for the haX.baby “Baby’s First Website” hackathon.
 
-Visit the observatory above the clouds to explore interactive starlight experiments, read field notes from a sleepy cloud astronomer, and whisper your own wish into the constellation sky.
-
----
-
-## 🌟 The Character: Nimbus Moonwhisper
-
-- **Species:** Tiny Cloud Spirit
-- **Occupation:** Junior Dream Astronomer
-- **Field Base:** The Midnight Observatory *(RA 19h 50m / DEC +08°52')*
-- **Personality:** Gentle, curious, sleepy, imaginative, and kind.
-- **Loves:** Collecting whispers and wishes, charting new constellations, and drinking warm chamomile dew.
-- **Habits:** Frequently forgets where they left their miniature brass telescope.
-- **Odd Quirk:** Sneezes a tiny sparkling star whenever someone tells them a happy story!
-
-### Core Story
-Nimbus was born on the quietest cloud in the sky. One evening, a little lost star asked for help finding its family. By connecting the stars into a constellation, Nimbus guided the star safely home. Inspired by this journey, Nimbus built a tiny observatory above the clouds to collect wishes, map dream delivery routes, compose soothing lullabies, and leave a warm light on for every sleepy traveler.
+The website follows **Nimbus Moonwhisper**, a gentle, curious, sleepy, and imaginative tiny cloud spirit who serves as the sky's resident **Junior Dream Astronomer**. Above the fluffy clouds, Nimbus collects quiet wishes, maps dream routes, weaves celestial lullabies, and ensures every wandering dreamer finds their way home.
 
 ---
 
-## 🧭 Multi-Page Architecture & Navigation
+## 🌟 Overview
 
-The website features an independent multi-page layout with a **permanently fixed navbar** that stays anchored at the top of the viewport across all pages. Each navigation option loads a dedicated, self-contained HTML page:
-
-1. **Home (`index.html`):**
-   - The main hero section with Nimbus's interactive character illustration.
-   - Welcome message and introduction to the Midnight Observatory.
-   - Primary calls to action: *“Meet Nimbus”*, *“Explore Projects”*, and *“Read the Story”*.
-   - Observatory at a glance preview cards linking to the other pages.
-   - Live telemetry status console and hidden Easter egg star.
-2. **About Nimbus (`about.html`):**
-   - Nimbus's complete character dossier and field journal.
-   - Personality traits: curious, sleepy, gentle, and forgetful.
-   - Three field-note observation cards with the interactive *"Tell Nimbus a happy story"* star-sneeze button.
-   - Astronomer's pocket toolkit (brass telescope, starlight logbook, chamber of wishes).
-3. **Projects (`projects.html`):**
-   - Three interactive project showcases:
-     - **Project 001 — Starsong Radio:** Web Audio API pocket lullaby synthesizer with animated sound wave visualizer bars.
-     - **Project 002 — Moonlight Bottles:** Glowing apothecary jar with clickable cork on/off toggle and 4 selectable hue swatches (*Moon Gold*, *Star Blush*, *Dream Lavender*, *Mint Glow*).
-     - **Project 003 — Dream Delivery Map:** SVG constellation sky chart (*Cloud Bay → Little Moon → Home*) with shooting star route animation and waypoint announcements.
-4. **Story (`story.html`):**
-   - Nimbus's origin story told across three quiet storybook scenes:
-     - *Chapter 01: A Little Cloud*
-     - *Chapter 02: The Lost Star*
-     - *Chapter 03: The Midnight Observatory*
-   - Illustrated scenes, constellation coordinates, and gentle animations.
-   - The Starry Wish Wall & Guestbook with quick inspiration prompts and pre-seeded notes.
+The Midnight Observatory is built as a complete, multi-page, responsive web experience. It blends charming storybook aesthetics with modern frontend craftsmanship: transparent 3D character illustrations, synchronized audio players, ambient starfields, and client-side page routing that allows visitors to explore different pages without ever interrupting the soothing background lullaby.
 
 ---
 
-## 📌 Permanently Fixed Navbar Features
+## ✨ Features
 
-- **Fixed Viewport Lock:** Anchored at the top using `position: fixed; top: 0; left: 0; right: 0; z-index: 1000;`.
-- **Content Clearance:** Added `padding-top: var(--header-height);` on `body` to ensure the navbar never obscures headings, buttons, or illustrations.
-- **Active Page Highlight:** Highlights the current page with a distinct blush pill, berry font color, and bottom border indicator (`is-active` and `aria-current="page"`).
-- **Click-Only Navigation:** Navigation changes only occur when explicitly clicking a link. Scrolling up or down never reveals another page.
-- **Compact Desktop Controls:** Day/Dream theme toggle and Sound On/Off toggle are positioned as compact, circular icon buttons on desktop, expanding into labeled buttons in the mobile drawer.
-- **Mobile Responsive Hamburger:** Collapsible drawer that automatically closes upon link selection or `Escape` key press.
+- **Multi-Page Architecture with Fixed Navigation:**
+  - **Home (`index.html`):** The grand observatory entrance featuring Nimbus's floating character stage, wish collector, live observatory telemetry console, atmosphere previews, and interactive secret compass easter egg.
+  - **About Nimbus (`about.html`):** Official character dossier, field journal observation cards, personality profile (curious, sleepy, gentle, forgetful), equipment breakdown, and the legendary star-sneezing lore.
+  - **Projects Workbench (`projects.html`):** Three distinct functional starlight experiments:
+    1. **StarSong Radio & Lullaby Box:** Pocket celestial music box playing the mountain lullaby with real-time waveform visualizer, dynamic timers, interactive scrubber progress bar, and replay controls.
+    2. **Midnight Lantern & Moonlight Bottles:** Interactive luminescence experiment with toggleable lamp states and four glowing color palettes (Stardust Gold, Nebula Mint, Twilight Lavender, Comet Rose).
+    3. **Dream Delivery Map:** Multi-stop celestial route simulator tracing starlight journeys from Sleepy Bay across Crescent Moon to Home.
+  - **Story (`story.html`):** Nimbus’s origin chronicle told across three illustrated chapters (*A Little Cloud*, *The Lost Star*, and *Building the Observatory*).
+  - **Owner Profile (`owner.html`):** Dedicated creator profile introducing student developer **Diganta Mukherjee** with a circular portrait, personal bio, 8 skill badges, and social profiles.
+
+- **Persistent Lullaby Playback Across Navigation:**
+  - Features an authoritative singleton audio engine (`PersistentLullabyPlayer`) and a seamless client-side page router (`PageRouter`).
+  - Visitors can navigate freely between Home, About, Projects, Story, and Owner without the lullaby stopping or restarting.
+  - Fully synchronized with the global navbar button (`▶️ Lullaby` / `⏸️ Playing` / `🔄 Replay`).
+
+- **Day & Dream Mode Theme Engine:**
+  - **Day Mode:** Soft cream skies, warm peach stardust, and pastel cloud observatory backdrops.
+  - **Dream Mode:** Deep midnight sky, glowing crescent moon, constellations, and celestial silhouettes.
+  - Synchronized across all 5 pages via `localStorage` with zero visual flash on page loads.
+
+- **Independent UI Sound Effects (Celestial Chimes):**
+  - Muted by default (`Chimes Off`), independent from the lullaby music player.
+  - Synthesized in real time using the native browser **Web Audio API** (soft pentatonic sine-wave chime bells).
+
+- **Accessibility & Motion Design:**
+  - High-contrast typography with frosted-glass card backdrops (`backdrop-filter: blur(8px)`).
+  - Screen reader live announcer (`aria-live="polite"`), skip-to-content links, semantic HTML5 landmarks, and full keyboard navigation support.
+  - Respects user preference for reduced motion (`prefers-reduced-motion`).
 
 ---
 
-## 🛠️ Technology Stack
+## 🛠️ Tech Stack
 
-- **HTML5:** 4 independent semantic pages (`index.html`, `about.html`, `projects.html`, `story.html`), ARIA live regions, skip links.
-- **CSS3:** Custom properties (CSS variables), CSS Grid, Flexbox, responsive typography via `clamp()`, fixed header lock, `@media (prefers-reduced-motion: reduce)`.
-- **Vanilla JavaScript (ES6+):** Multi-page null-safe state manager, native **Web Audio API** synthesizer, `localStorage` persistence for themes, sound settings, and telemetry.
-- **Scalable Vector Graphics (SVG):** 100% custom vector illustrations crafted specifically for this project (crisp at all screen scales with 0% risk of broken images).
+- **Markup:** Semantic HTML5 (accessible landmarks, dialog modals, forms, ARIA attributes).
+- **Styling:** Vanilla CSS3 (Custom Properties / CSS Variables, Flexbox, CSS Grid, Fluid Typography with `clamp()`, SVG drop-shadow filters).
+- **Interactivity & State:** Modern Vanilla JavaScript (ES2022, `fetch` + `DOMParser` PJAX page routing, `Audio` singleton, Web Audio API synthesizers).
+- **Typography:** DM Serif Display & Fredoka (via Google Fonts with clean system fallbacks).
+- **Icons & Graphics:** Inline Scalable Vector Graphics (SVG) and transparent PNG assets.
 
 ---
 
-## 📂 Project Structure
+## 📁 Project Structure
 
 ```text
-/
-├── index.html                   # Home page & Observatory preview
-├── about.html                   # About Nimbus & Field Journal
-├── projects.html                # 3 Interactive Starlight Experiments
-├── story.html                   # Origin Story & Starry Wish Wall
-├── style.css                    # Shared design system, fixed header & themes
-├── script.js                    # Shared Web Audio & multi-page state manager
-├── README.md                    # Project documentation & biography
-└── assets/
-    ├── favicon.svg              # Nimbus sleeping cloud favicon
-    ├── nimbus-character.svg     # Full hero illustration of Nimbus
-    ├── moonlight-bottle.svg     # Project 002 apothecary bottle art
-    ├── starsong-radio.svg       # Project 001 vintage music box art
-    └── observatory-dome.svg     # Chapter 03 Observatory dome art
+babyweb/
+├── index.html               # Main entrance, hero character stage, live telemetry & previews
+├── about.html               # Nimbus character dossier, personality traits & equipment
+├── projects.html            # StarSong Radio, Midnight Lantern & Dream Delivery Map
+├── story.html               # Origin story illustrated in three scrollable chapters
+├── owner.html               # Owner profile page for Diganta Mukherjee
+├── style.css                # Master stylesheet: theme variables, components, animations
+├── script.js                # Core controller: audio engine, page router, theme & interactions
+├── .gitattributes           # Git line-ending normalization rules
+├── .gitignore               # Ignored system, temporary, and editor files
+├── README.md                # Project documentation and guide
+├── assets/
+│   ├── favicon.svg          # Custom crescent moon and star vector favicon
+│   └── images/              # Web-optimized assets
+│       ├── nimbus-character.png    # Transparent 3D Nimbus character illustration
+│       ├── observatory-light.png   # Daytime observatory backdrop
+│       ├── observatory-dark.png    # Nighttime observatory backdrop
+│       ├── lullaby-box.png         # StarSong Radio & Lullaby Box artwork
+│       ├── midnight-lantern.png    # Midnight Lantern artwork
+│       └── owner.jpg               # Circular profile photo of Diganta Mukherjee
+├── photos/                  # High-resolution original source photography & artwork
+│   ├── avatar.png           # Transparent character portrait (1024x1536 RGBA)
+│   ├── light mode.png       # Original daytime observatory illustration
+│   ├── dark mode.png        # Original nighttime observatory illustration
+│   ├── box.png              # Original lullaby box illustration
+│   ├── lantern.png          # Original lantern illustration
+│   └── owner.jpg            # Original photo of Diganta Mukherjee
+└── audio/
+    └── the_mountain-lullaby-lullaby-music-576578.mp3  # Mountain lullaby audio track
 ```
 
 ---
 
-## 💻 How to Run Locally
+## 🚀 Run Locally
 
-Because this project is built entirely with standard web technologies, you do not need to install complex build tools.
+The website is built with vanilla web technologies and requires no heavy build tools, compilers, or package managers to run.
 
-### Option 1: Direct File Open
-Double-click `index.html` in your file explorer to open it in any modern browser.
+### Option 1: Using Any Local Static Web Server (Recommended)
 
-### Option 2: Using Node.js (Recommended for full Web Audio / LocalStorage experience)
-Run a local static server from the project directory:
+Running through a local web server allows seamless `fetch`-based page transitions and audio persistence without browser local-file CORS restrictions:
 
+#### With Node.js:
 ```bash
-# Using Node's built-in npx
+# Using npx serve
 npx serve .
-# or
-npx http-server -p 8080
+
+# Or using http-server
+npx http-server . -p 8080
 ```
-Then navigate to `http://localhost:8080` in your browser.
 
----
-
-## ☁️ Deployment Instructions
-
-The site is ready for static deployment on any hosting provider:
-
-### Deploying to GitHub Pages
-1. Push this repository to GitHub.
-2. In your repository, go to **Settings** → **Pages**.
-3. Under **Branch**, select `main` (or `master`) and folder `/ (root)`.
-4. Click **Save**. Your site will be live within seconds!
-
-### Deploying to Vercel
+#### With Python 3:
 ```bash
-npx vercel
+python -m http.server 8080
 ```
-Or import the repository directly in the Vercel dashboard as a static website.
+
+Then open your browser at `http://localhost:8080`.
+
+### Option 2: Direct Browser Opening
+
+You can also double-click `index.html` to open the website directly in any modern browser (Chrome, Edge, Firefox, Safari). If client-side `fetch` is restricted by your browser for `file://` URLs, the built-in router automatically falls back to standard page navigation so the website remains fully browsable!
 
 ---
 
-## ♿ Accessibility & Performance Auditing
+## 🎵 Assets and Audio
 
-- **Keyboard Navigable:** Every interactive element (theme toggle, sound toggle, project buttons, color swatches, secret star, and guestbook) is accessible via `Tab`, `Enter`, and `Space`.
-- **High Contrast Focus Rings:** Distinct 3px outlines with adequate offset.
-- **Reduced Motion Support:** Respects `prefers-reduced-motion: reduce` by halting animations, star drifting, and cursor trails.
-- **WCAG AA Contrast Compliant:** Tested across both Day Mode and Dream Mode color palettes.
-- **Zero Console Errors:** Clean startup with friendly observatory log message.
+- **Character Artwork & Backgrounds:** Located in `assets/images/` and `photos/`. All images use clean transparency and responsive `object-fit: contain` and `object-fit: cover` rules to adapt to any screen size.
+- **Lullaby Track:** The soothing mountain lullaby is located at `audio/the_mountain-lullaby-lullaby-music-576578.mp3`. It is loaded on demand when the user presses Play and pauses politely without unexpected autoplay.
 
 ---
 
-## 📜 Credits & License
+## 🌐 Deployment (GitHub Pages)
 
-- Designed and coded with love for the **haX.baby Hackathon 2026**.
-- Dedicated to stargazers, sleepy spirits, and everyone whose good dreams start small.
-- MIT License.
+The website is 100% static and ready for instant zero-config deployment on **GitHub Pages**:
+
+1. Push this repository to GitHub: `https://github.com/digantamukherjee-19/Nimbus.git`.
+2. In your repository on GitHub, navigate to **Settings** → **Pages**.
+3. Under **Build and deployment** → **Source**, select **Deploy from a branch**.
+4. Under **Branch**, select `main` and root `/` folder, then click **Save**.
+5. GitHub Pages will build and deploy the site at:
+   ```text
+   https://digantamukherjee-19.github.io/Nimbus/
+   ```
+
+### Base-Path Compatibility
+All asset references, stylesheet links, script tags, and internal hyperlinks use strictly **repository-relative paths** (`photos/...`, `assets/...`, `about.html`, etc.). This ensures that the entire website, its images, audio, and client-side page router function with 100% fidelity both at custom domain roots (`/`) and project sub-paths (`/Nimbus/`).
+
+---
+
+## 👤 Author
+
+**Diganta Mukherjee**  
+CSE Undergraduate Student · Creator & Developer
+
+- **GitHub:** [@digantamukherjee-19](https://github.com/digantamukherjee-19)
+- **LinkedIn:** [Diganta Mukherjee](https://www.linkedin.com/in/diganta-mukherjee-271268412?utm_source=share_via&utm_content=profile&utm_medium=member_android)
+
+---
+
+## 📄 License
+
+*No formal license has been specified yet.*
+
+---
+
+## 🙏 Acknowledgements
+
+- **haX.baby:** Inspiration and prompt for the "Baby's First Website" Hackathon 2026.
+- **Google Fonts:** For the beautiful typefaces *DM Serif Display*, *Fredoka*, and *JetBrains Mono*.
+- **The Mountain:** For the peaceful acoustic mountain lullaby audio track.

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diganta Mukherjee — Creator & Owner · The Midnight Observatory</title>
+  <meta name="description" content="Meet Diganta Mukherjee, CSE Undergraduate Student and creator of Nimbus Moonwhisper — The Midnight Observatory.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+  <!-- Google Fonts: DM Serif Display & Fredoka with system fallbacks -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Fredoka:wght@300..700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Immediate Theme Initializer to prevent visual flash on page navigation -->
+  <script>
+    (function() {
+      try {
+        var savedTheme = localStorage.getItem('nimbus_theme');
+        if (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          savedTheme = 'dream';
+        }
+        if (savedTheme === 'dream') {
+          document.documentElement.setAttribute('data-theme', 'dream');
+        }
+      } catch(e) {}
+    })();
+  </script>
+</head>
+<body data-theme="day">
+  <!-- Accessibility Skip Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Ambient Starfield for interactive background stars -->
+  <div id="ambient-starfield" class="ambient-starfield" aria-hidden="true"></div>
+
+  <!-- Permanently Fixed Header and Navigation -->
+  <header class="site-header" id="site-header">
+    <div class="header-container">
+      <a href="index.html" class="brand-link" aria-label="Nimbus's Observatory - Home">
+        <span class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="28" height="28" fill="none">
+            <circle cx="16" cy="16" r="14" fill="var(--color-blush)" opacity="0.6"/>
+            <path d="M14 6 C8 8 7 18 13 24 C10 22 9 14 15 9 C17 7 19 6.5 21 6.5 C18 6 16 6 14 6 Z" fill="var(--color-berry)"/>
+            <polygon points="21,12 22.5,15.5 26,17 22.5,18.5 21,22 19.5,18.5 16,17 19.5,15.5" fill="var(--color-gold)"/>
+          </svg>
+        </span>
+        <span class="brand-text">
+          <span class="brand-name">Nimbus Moonwhisper</span>
+          <span class="brand-sub">The Midnight Observatory</span>
+        </span>
+      </a>
+
+      <!-- Mobile Menu Toggle -->
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation menu">
+        <span class="hamburger-box" aria-hidden="true">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </span>
+      </button>
+
+      <!-- Main Navigation Menu (4 primary options + Owner control) -->
+      <nav class="site-nav" id="site-nav" aria-label="Main Navigation">
+        <ul class="nav-list">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="about.html" class="nav-link">About Nimbus</a></li>
+          <li><a href="projects.html" class="nav-link">Projects</a></li>
+          <li><a href="story.html" class="nav-link">Story</a></li>
+        </ul>
+
+        <!-- Action Controls: Theme, Global Lullaby Player, Chimes Notification, and Owner Profile Button -->
+        <div class="nav-controls">
+          <button type="button" class="btn-control btn-control-compact" id="theme-toggle" aria-pressed="false" aria-label="Switch between Day Mode and Dream Mode" title="Toggle Day / Dream Mode">
+            <span class="btn-control-icon" id="theme-icon" aria-hidden="true">🌙</span>
+            <span class="btn-control-label" id="theme-label">Dream Mode</span>
+          </button>
+
+          <button type="button" class="btn-control btn-control-compact btn-lullaby-global" id="global-lullaby-btn" aria-pressed="false" aria-label="Play lullaby" title="Play lullaby">
+            <span class="btn-control-icon" id="global-lullaby-icon" aria-hidden="true">▶️</span>
+            <span class="btn-control-label" id="global-lullaby-label">Lullaby</span>
+            <span class="global-music-pulse" id="global-music-pulse" aria-hidden="true"></span>
+          </button>
+
+          <button type="button" class="btn-control btn-control-compact" id="sound-toggle" aria-pressed="false" aria-label="Toggle celestial chimes and sound effects" title="Toggle sound effects (Chimes)">
+            <span class="btn-control-icon" id="sound-icon" aria-hidden="true">🔇</span>
+            <span class="btn-control-label" id="sound-label">Chimes Off</span>
+          </button>
+
+          <!-- Owner Profile Button placed immediately beside Notification tab -->
+          <a href="owner.html" class="btn-control btn-control-compact nav-link nav-owner-btn is-active" id="nav-owner" aria-label="Owner Profile" title="Owner Profile" aria-current="page">
+            <span class="btn-control-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </span>
+            <span class="btn-control-label">Owner</span>
+          </a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Live Announcer for screen readers -->
+  <div id="live-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Toast Notification Bar for wishes & actions -->
+  <aside id="toast-shelf" class="toast-shelf" aria-live="polite" aria-atomic="true"></aside>
+
+  <main id="main-content">
+    <!-- ========================================================
+         OWNER PROFILE SECTION: DIGANTA MUKHERJEE
+         ======================================================== -->
+    <section class="section owner-section" id="owner" aria-labelledby="owner-heading">
+      <div class="container owner-container">
+        
+        <!-- Section Header -->
+        <header class="section-header">
+          <span class="section-eyebrow">MEET THE CREATOR</span>
+          <h1 class="section-title" id="owner-heading">The Dreamer Behind the Observatory.</h1>
+          <p class="section-desc">Get to know the student developer who imagined and handcrafted this cozy haven above the clouds.</p>
+        </header>
+
+        <!-- Main Showcase Card: Photo + Identity -->
+        <article class="owner-showcase-card">
+          <div class="owner-hero-layout">
+            
+            <!-- Circular Profile Photo Frame -->
+            <div class="owner-avatar-container">
+              <div class="owner-avatar-frame">
+                <img src="photos/owner.jpg" alt="Portrait of Diganta Mukherjee" class="owner-avatar-img" width="1146" height="1150">
+              </div>
+              <div class="owner-avatar-glow" aria-hidden="true"></div>
+            </div>
+
+            <!-- Identity & Subtitle -->
+            <div class="owner-identity">
+              <span class="owner-badge-tag">WEBSITE ARCHITECT & DEVELOPER</span>
+              <h2 class="owner-name">Diganta Mukherjee</h2>
+              <p class="owner-subtitle">CSE Undergraduate Student</p>
+              
+              <div class="owner-tags-row">
+                <span class="earlyweb-badge">🎓 Computer Science & Engineering</span>
+                <span class="earlyweb-badge">✨ Creative Technologist</span>
+                <span class="earlyweb-badge">🔭 Nimbus Observatory Creator</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Two Column Content Grid: About Me & Skills -->
+        <div class="owner-content-grid">
+          
+          <!-- Card 1: About Me -->
+          <article class="owner-card owner-about-card">
+            <div class="owner-card-header">
+              <span class="owner-card-icon" aria-hidden="true">📖</span>
+              <h3 class="owner-card-title">About Me</h3>
+            </div>
+            <div class="owner-card-body">
+              <p class="owner-about-text">
+                “Hi, I am Diganta Mukherjee, a CSE undergraduate student. I am very curious about the continuous changes happening in our day-to-day life, so I have decided to try out every possible thing and keep up with these continuous changes.”
+              </p>
+            </div>
+          </article>
+
+          <!-- Card 2: Skills -->
+          <article class="owner-card owner-skills-card">
+            <div class="owner-card-header">
+              <span class="owner-card-icon" aria-hidden="true">🛠️</span>
+              <h3 class="owner-card-title">Skills</h3>
+            </div>
+            <div class="owner-card-body">
+              <p class="owner-section-intro">Core technologies and creative disciplines used in engineering digital experiences:</p>
+              <div class="skills-grid" aria-label="Diganta's Technical and Creative Skills">
+                <span class="skill-badge"><span class="skill-dot"></span>Python</span>
+                <span class="skill-badge"><span class="skill-dot"></span>Java</span>
+                <span class="skill-badge"><span class="skill-dot"></span>HTML</span>
+                <span class="skill-badge"><span class="skill-dot"></span>CSS</span>
+                <span class="skill-badge"><span class="skill-dot"></span>Git</span>
+                <span class="skill-badge"><span class="skill-dot"></span>GitHub</span>
+                <span class="skill-badge"><span class="skill-dot"></span>Web Design</span>
+                <span class="skill-badge"><span class="skill-dot"></span>Web Development</span>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Social Links Section: Connect With Me -->
+        <article class="owner-card owner-socials-card">
+          <div class="owner-card-header">
+            <span class="owner-card-icon" aria-hidden="true">🌐</span>
+            <h3 class="owner-card-title">Connect With Me</h3>
+          </div>
+          <p class="owner-section-intro">Feel free to connect, collaborate on innovative projects, or explore open-source code:</p>
+          
+          <div class="socials-grid">
+            <!-- LinkedIn -->
+            <a href="https://www.linkedin.com/in/diganta-mukherjee-271268412?utm_source=share_via&utm_content=profile&utm_medium=member_android" 
+               class="social-card social-linkedin" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               aria-label="Visit Diganta's LinkedIn profile (opens in a new tab)"
+               title="Visit Diganta's LinkedIn profile">
+              <div class="social-icon-wrapper" aria-hidden="true">
+                <!-- LinkedIn SVG Icon -->
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                  <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                </svg>
+              </div>
+              <div class="social-card-info">
+                <span class="social-card-title">LinkedIn</span>
+                <span class="social-card-handle">in/diganta-mukherjee-271268412</span>
+              </div>
+              <span class="social-arrow" aria-hidden="true">↗</span>
+            </a>
+
+            <!-- GitHub -->
+            <a href="https://github.com/digantamukherjee-19" 
+               class="social-card social-github" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               aria-label="Visit Diganta's GitHub profile (opens in a new tab)"
+               title="Visit Diganta's GitHub profile">
+              <div class="social-icon-wrapper" aria-hidden="true">
+                <!-- GitHub SVG Icon -->
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+                </svg>
+              </div>
+              <div class="social-card-info">
+                <span class="social-card-title">GitHub</span>
+                <span class="social-card-handle">@digantamukherjee-19</span>
+              </div>
+              <span class="social-arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Navigation Bridge back to Observatory features -->
+        <div class="owner-bridge-card">
+          <div class="bridge-content">
+            <span class="bridge-sparkle" aria-hidden="true">☁️</span>
+            <div>
+              <h3 class="bridge-title">Step Back into the Sky</h3>
+              <p class="bridge-desc">Explore Nimbus’s starlight workbench, tune into the mountain lullaby, or send wishes across constellations.</p>
+            </div>
+          </div>
+          <div class="bridge-actions">
+            <a href="projects.html" class="btn btn-primary">
+              <span>Explore Projects →</span>
+            </a>
+            <a href="story.html" class="btn btn-secondary">
+              <span>Read Nimbus's Story</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================
+       CELESTIAL FOOTER
+       ======================================================== -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-top">
+        <div class="footer-constellation" aria-hidden="true">
+          <svg viewBox="0 0 240 40" width="240" height="40" fill="none">
+            <line x1="20" y1="20" x2="60" y2="10" stroke="var(--color-berry)" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <line x1="60" y1="10" x2="110" y2="25" stroke="var(--color-berry)" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <line x1="110" y1="25" x2="160" y2="15" stroke="var(--color-berry)" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <line x1="160" y1="15" x2="220" y2="28" stroke="var(--color-berry)" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <circle cx="20" cy="20" r="3.5" fill="var(--color-gold)"/>
+            <circle cx="60" cy="10" r="4.5" fill="var(--color-gold)"/>
+            <circle cx="110" cy="25" r="3" fill="var(--color-gold)"/>
+            <circle cx="160" cy="15" r="5" fill="var(--color-gold)"/>
+            <circle cx="220" cy="28" r="3.5" fill="var(--color-gold)"/>
+          </svg>
+        </div>
+
+        <a href="#main-content" class="btn-back-to-top" id="btn-back-to-top" aria-label="Return to top of page">
+          <span>↑ Back to top</span>
+        </a>
+      </div>
+
+      <div class="footer-main">
+        <p class="footer-signoff">
+          Created with curiosity & stardust by <strong>Diganta Mukherjee</strong> ♡
+        </p>
+        <p class="footer-tagline">
+          “Good dreams start small.”
+        </p>
+      </div>
+
+      <div class="footer-badges">
+        <span class="earlyweb-badge">
+          <span class="badge-dot"></span>
+          <span>Observatory Logbook Guest #0042</span>
+        </span>
+        <span class="earlyweb-badge">
+          <span>☁️ haX.baby · Baby's First Website 2026</span>
+        </span>
+        <span class="earlyweb-badge">
+          <span>Best viewed under blanket forts with warm tea</span>
+        </span>
+      </div>
+
+      <div class="footer-legal">
+        <p>© 2026 Diganta Mukherjee & Nimbus Moonwhisper. Built with HTML5, CSS3, Web Audio & Vanilla JS. Dedicated to dreamers everywhere.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Main JavaScript File -->
+  <script src="script.js"></script>
+</body>
+</html>
