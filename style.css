@@ -487,6 +487,47 @@ body[data-theme="dream"] .btn-control[aria-pressed="true"] {
   display: none;
 }
 
+/* Global Lullaby Navbar Button */
+.btn-lullaby-global {
+  position: relative;
+  transition: all var(--transition-fast);
+}
+
+.btn-lullaby-global.is-playing-music {
+  border-color: var(--color-berry);
+  background-color: var(--color-blush);
+  color: var(--color-berry);
+  box-shadow: 0 0 10px rgba(163, 64, 99, 0.3);
+}
+
+body[data-theme="dream"] .btn-lullaby-global.is-playing-music {
+  border-color: var(--color-berry);
+  background-color: var(--bg-elevated);
+  color: var(--color-berry);
+  box-shadow: 0 0 12px rgba(244, 199, 220, 0.35);
+}
+
+.global-music-pulse {
+  display: none;
+  width: 7px;
+  height: 7px;
+  background-color: var(--color-berry);
+  border-radius: 50%;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  animation: pulseGlow 1.5s infinite ease-in-out;
+}
+
+.btn-lullaby-global.is-playing-music .global-music-pulse {
+  display: block;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.6); opacity: 1; }
+}
+
 /* Mobile Hamburger button */
 .nav-toggle {
   display: none;
@@ -964,7 +1005,7 @@ body[data-theme="dream"] .character-shadow {
    8. Character Profile Section: Field Journal Cards
    -------------------------------------------------------------------------- */
 .profile-section {
-  background-color: var(--bg-elevated);
+  background-color: transparent;
   border-top: 1.5px dashed var(--border-subtle);
   border-bottom: 1.5px dashed var(--border-subtle);
 }
@@ -1208,6 +1249,80 @@ body[data-theme="dream"] .lullaby-box-img {
   box-shadow: 0 0 8px #49b36d;
 }
 
+/* Lullaby Box Player Controls Deck */
+.lullaby-player-controls-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 0.4rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.lullaby-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+}
+
+.time-display {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  min-width: 34px;
+}
+
+.progress-bar-container {
+  flex-grow: 1;
+  height: 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  position: relative;
+  cursor: pointer;
+  touch-action: none;
+  overflow: hidden;
+}
+
+.progress-bar-container:focus-visible {
+  outline: 2px solid var(--color-berry);
+}
+
+.progress-bar-track {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-gold), var(--color-berry));
+  border-radius: var(--radius-pill);
+  width: 0%;
+  transition: width 0.1s linear;
+}
+
+.lullaby-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.btn-icon-only {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-pill);
+}
+
 /* Project 001: Starsong Radio Visualizer */
 .sound-wave-visualizer {
   display: flex;
@@ -1418,7 +1533,7 @@ body[data-theme="dream"] .step-chip.is-active {
    10. Origin Story: Once Upon A Cloud (Interactive Chapters)
    -------------------------------------------------------------------------- */
 .origin-section {
-  background-color: var(--bg-elevated);
+  background-color: transparent;
   border-top: 1.5px dashed var(--border-subtle);
   border-bottom: 1.5px dashed var(--border-subtle);
 }

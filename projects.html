@@ -71,16 +71,22 @@
           <li><a href="story.html" class="nav-link">Story</a></li>
         </ul>
 
-        <!-- Action Controls: Compact Theme & Sound Toggle on desktop -->
+        <!-- Action Controls: Theme, Global Lullaby Player, and Chimes Sound Effect -->
         <div class="nav-controls">
           <button type="button" class="btn-control btn-control-compact" id="theme-toggle" aria-pressed="false" aria-label="Switch between Day Mode and Dream Mode" title="Toggle Day / Dream Mode">
             <span class="btn-control-icon" id="theme-icon" aria-hidden="true">🌙</span>
             <span class="btn-control-label" id="theme-label">Dream Mode</span>
           </button>
 
-          <button type="button" class="btn-control btn-control-compact" id="sound-toggle" aria-pressed="false" aria-label="Toggle celestial sound effects and music" title="Toggle Sound On / Off">
+          <button type="button" class="btn-control btn-control-compact btn-lullaby-global" id="global-lullaby-btn" aria-pressed="false" aria-label="Play lullaby" title="Play lullaby">
+            <span class="btn-control-icon" id="global-lullaby-icon" aria-hidden="true">▶️</span>
+            <span class="btn-control-label" id="global-lullaby-label">Lullaby</span>
+            <span class="global-music-pulse" id="global-music-pulse" aria-hidden="true"></span>
+          </button>
+
+          <button type="button" class="btn-control btn-control-compact" id="sound-toggle" aria-pressed="false" aria-label="Toggle celestial chimes and sound effects" title="Toggle sound effects (Chimes)">
             <span class="btn-control-icon" id="sound-icon" aria-hidden="true">🔇</span>
-            <span class="btn-control-label" id="sound-label">Sound Off</span>
+            <span class="btn-control-label" id="sound-label">Chimes Off</span>
           </button>
         </div>
       </nav>
@@ -106,7 +112,6 @@
         </header>
 
         <div class="projects-grid">
-          <!-- PROJECT 001: STARSONG RADIO -->
           <!-- PROJECT 001: STARSONG RADIO & LULLABY BOX -->
           <article class="project-card project-radio" id="project-starsong">
             <div class="project-header">
@@ -134,19 +139,39 @@
             <div class="project-info">
               <h2 class="project-title">StarSong Radio & Lullaby Box</h2>
               <p class="project-desc">
-                “A pocket-sized celestial music box that chimes a soothing lullaby from starlight.”
+                “A pocket-sized celestial music box playing a gentle mountain lullaby for stargazers.”
               </p>
-              <div class="project-status-line">
-                <span class="status-indicator" id="radio-status-dot"></span>
-                <span class="status-text" id="radio-status-text">Tuned to Pleiades 92.4 FM · Standing by</span>
+
+              <!-- Real-time Progress Bar & Timers -->
+              <div class="lullaby-player-controls-deck">
+                <div class="lullaby-progress-row">
+                  <span class="time-display" id="lullaby-time-current">0:00</span>
+                  <div class="progress-bar-container" id="lullaby-progress-container" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Lullaby playback progress" tabindex="0">
+                    <div class="progress-bar-track">
+                      <div class="progress-bar-fill" id="lullaby-progress-fill"></div>
+                      <div class="progress-bar-thumb" id="lullaby-progress-thumb"></div>
+                    </div>
+                  </div>
+                  <span class="time-display" id="lullaby-time-duration">--:--</span>
+                </div>
+
+                <div class="project-status-line">
+                  <span class="status-indicator" id="radio-status-dot"></span>
+                  <span class="status-text" id="radio-status-text">Ready to dream · Press Play</span>
+                </div>
               </div>
             </div>
 
             <div class="project-controls">
-              <button type="button" class="btn btn-primary btn-full" id="btn-toggle-lullaby" aria-pressed="false">
-                <span class="btn-icon" id="lullaby-btn-icon">🎵</span>
-                <span id="lullaby-btn-label">Play my lullaby</span>
-              </button>
+              <div class="lullaby-btn-group">
+                <button type="button" class="btn btn-primary btn-full" id="btn-toggle-lullaby" aria-pressed="false">
+                  <span class="btn-icon" id="lullaby-btn-icon">▶️</span>
+                  <span id="lullaby-btn-label">Play lullaby</span>
+                </button>
+                <button type="button" class="btn btn-secondary btn-icon-only" id="btn-replay-lullaby" aria-label="Replay lullaby from start" title="Replay lullaby from start" style="display: none;">
+                  <span class="btn-icon">🔄</span>
+                </button>
+              </div>
             </div>
           </article>
 

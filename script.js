@@ -1,24 +1,29 @@
 /**
  * NIMBUS MOONWHISPER — THE MIDNIGHT OBSERVATORY
- * Master Interactive Controller
+ * Master Interactive Controller & Persistent Audio Engine
  *
- * Multi-page friendly, accessible, performant, responsive, and cozy.
- * Web Audio API synthesizer, state management across pages via localStorage.
+ * Multi-page friendly, accessible, responsive, and cozy.
+ * Features:
+ * - Persistent Lullaby Player (plays actual MP3 across page navigation)
+ * - Seamless Page Router (PJAX / history.pushState navigation keeping audio alive)
+ * - Synchronized Global Navbar & Lullaby Box controls
+ * - Real-time progress bar with seeking and replay
+ * - Independent sound-effects engine (Web Audio chimes for UI only)
+ * - Shared Light & Dark Observatory themes with zero flash
  */
 
 'use strict';
 
 (function () {
   // =========================================================================
-  // 1. STATE MANAGEMENT & DOM REFS
+  // 1. GLOBAL STATE
   // =========================================================================
 
   const state = {
     theme: 'day', // 'day' | 'dream'
-    soundEnabled: false,
+    soundEnabled: false, // UI sound effects (chimes) only
     starsMapped: 128,
     dreamDeliveries: 7,
-    lullabyPlaying: false,
     bottleLit: true,
     bottleColor: 'gold',
     easterEggTaps: 0,
@@ -27,12 +32,18 @@
     prefersReducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches
   };
 
-  // DOM Elements (queried safely per page)
+  // DOM Elements dictionary
   const DOM = {
+    // Shell elements (permanent across navigation)
     body: document.body,
     themeToggle: document.getElementById('theme-toggle'),
     themeIcon: document.getElementById('theme-icon'),
     themeLabel: document.getElementById('theme-label'),
+
+    globalLullabyBtn: document.getElementById('global-lullaby-btn'),
+    globalLullabyIcon: document.getElementById('global-lullaby-icon'),
+    globalLullabyLabel: document.getElementById('global-lullaby-label'),
+    globalMusicPulse: document.getElementById('global-music-pulse'),
 
     soundToggle: document.getElementById('sound-toggle'),
     soundIcon: document.getElementById('sound-icon'),
@@ -40,77 +51,291 @@
 
     navToggle: document.getElementById('nav-toggle'),
     siteNav: document.getElementById('site-nav'),
-    navLinks: document.querySelectorAll('.nav-link'),
+    navLinks: document.querySelectorAll('.site-nav .nav-link'),
 
-    heroWishBtn: document.getElementById('btn-hero-wish'),
-    heroWishLayer: document.getElementById('hero-wish-layer'),
-    heroStage: document.getElementById('hero-stage'),
-    characterWrapper: document.getElementById('character-wrapper'),
-
-    tellStoryBtn: document.getElementById('btn-tell-story'),
-
-    // Project 001: Starsong Radio
-    projectStarsong: document.getElementById('project-starsong'),
-    toggleLullabyBtn: document.getElementById('btn-toggle-lullaby'),
-    lullabyBtnIcon: document.getElementById('lullaby-btn-icon'),
-    lullabyBtnLabel: document.getElementById('lullaby-btn-label'),
-    radioStatusDot: document.getElementById('radio-status-dot'),
-    radioStatusText: document.getElementById('radio-status-text'),
-
-    // Project 002: Moonlight Bottles
-    bottleStage: document.getElementById('bottle-stage'),
-    toggleBottleBtn: document.getElementById('btn-toggle-bottle'),
-    bottleBtnIcon: document.getElementById('bottle-btn-icon'),
-    bottleBtnLabel: document.getElementById('bottle-btn-label'),
-    bottleStatusDot: document.getElementById('bottle-status-dot'),
-    bottleStatusText: document.getElementById('bottle-status-text'),
-    paletteSwatches: document.querySelectorAll('.palette-swatch'),
-
-    // Project 003: Dream Delivery Map
-    sendDreamBtn: document.getElementById('btn-send-dream'),
-    travelingStar: document.getElementById('traveling-star'),
-    stepBay: document.getElementById('step-bay'),
-    stepMoon: document.getElementById('step-moon'),
-    stepHome: document.getElementById('step-home'),
-    mapStatusDot: document.getElementById('map-status-dot'),
-    mapStatusText: document.getElementById('map-status-text'),
-
-    // Status Deck
-    statStarsMapped: document.getElementById('stat-stars-mapped'),
-    statDreamDeliveries: document.getElementById('stat-dream-deliveries'),
-
-    // Guestbook & Wishes
-    wishForm: document.getElementById('wish-form'),
-    wishAuthorInput: document.getElementById('wish-author'),
-    wishTextInput: document.getElementById('wish-text'),
-    charCounter: document.getElementById('char-counter'),
-    wishesList: document.getElementById('wishes-list'),
-    wishCountPill: document.getElementById('wish-count-pill'),
-    quickPromptBtns: document.querySelectorAll('.btn-prompt'),
-
-    // Easter Egg
-    easterEggStar: document.getElementById('easter-egg-star'),
-    easterModal: document.getElementById('easter-modal'),
-    easterBackdrop: document.getElementById('easter-backdrop'),
-    easterCloseBtn: document.getElementById('easter-close-btn'),
-    easterDismissBtn: document.getElementById('easter-dismiss-btn'),
-
-    // Feedback
     toastShelf: document.getElementById('toast-shelf'),
     liveAnnouncer: document.getElementById('live-announcer'),
-    btnBackToTop: document.getElementById('btn-back-to-top'),
-    ambientStarfield: document.getElementById('ambient-starfield')
+    ambientStarfield: document.getElementById('ambient-starfield'),
+
+    // Page-specific elements (refreshed on each page load/navigation)
+    mainContent: document.getElementById('main-content'),
+    heroWishBtn: null,
+    heroWishLayer: null,
+    heroStage: null,
+    characterWrapper: null,
+    tellStoryBtn: null,
+
+    // Project 001: Starsong Radio & Lullaby Box
+    projectStarsong: null,
+    toggleLullabyBtn: null,
+    replayLullabyBtn: null,
+    lullabyBtnIcon: null,
+    lullabyBtnLabel: null,
+    lullabyTimeCurrent: null,
+    lullabyTimeDuration: null,
+    lullabyProgressContainer: null,
+    lullabyProgressFill: null,
+    lullabyProgressThumb: null,
+    radioStatusDot: null,
+    radioStatusText: null,
+
+    // Project 002: Midnight Lantern & Moonlight Bottles
+    bottleStage: null,
+    toggleBottleBtn: null,
+    bottleBtnIcon: null,
+    bottleBtnLabel: null,
+    bottleStatusDot: null,
+    bottleStatusText: null,
+    paletteSwatches: [],
+
+    // Project 003: Dream Delivery Map
+    sendDreamBtn: null,
+    travelingStar: null,
+    stepBay: null,
+    stepMoon: null,
+    stepHome: null,
+    mapStatusDot: null,
+    mapStatusText: null,
+
+    // Status Deck
+    statStarsMapped: null,
+    statDreamDeliveries: null,
+
+    // Guestbook & Wishes
+    wishForm: null,
+    wishAuthorInput: null,
+    wishTextInput: null,
+    charCounter: null,
+    wishesList: null,
+    wishCountPill: null,
+    quickPromptBtns: [],
+
+    // Easter Egg
+    easterEggStar: null,
+    easterModal: null,
+    easterBackdrop: null,
+    easterCloseBtn: null,
+    easterDismissBtn: null,
+
+    btnBackToTop: null
   };
 
+  /**
+   * Queries and caches page-specific DOM elements within <main id="main-content">
+   */
+  function queryPageDOM() {
+    DOM.mainContent = document.getElementById('main-content');
+
+    // Hero
+    DOM.heroWishBtn = document.getElementById('btn-hero-wish');
+    DOM.heroWishLayer = document.getElementById('hero-wish-layer');
+    DOM.heroStage = document.getElementById('hero-stage');
+    DOM.characterWrapper = document.getElementById('character-wrapper');
+    DOM.tellStoryBtn = document.getElementById('btn-tell-story');
+
+    // Project 001: Lullaby Box
+    DOM.projectStarsong = document.getElementById('project-starsong');
+    DOM.toggleLullabyBtn = document.getElementById('btn-toggle-lullaby');
+    DOM.replayLullabyBtn = document.getElementById('btn-replay-lullaby');
+    DOM.lullabyBtnIcon = document.getElementById('lullaby-btn-icon');
+    DOM.lullabyBtnLabel = document.getElementById('lullaby-btn-label');
+    DOM.lullabyTimeCurrent = document.getElementById('lullaby-time-current');
+    DOM.lullabyTimeDuration = document.getElementById('lullaby-time-duration');
+    DOM.lullabyProgressContainer = document.getElementById('lullaby-progress-container');
+    DOM.lullabyProgressFill = document.getElementById('lullaby-progress-fill');
+    DOM.lullabyProgressThumb = document.getElementById('lullaby-progress-thumb');
+    DOM.radioStatusDot = document.getElementById('radio-status-dot');
+    DOM.radioStatusText = document.getElementById('radio-status-text');
+
+    // Project 002: Midnight Lantern
+    DOM.bottleStage = document.getElementById('bottle-stage');
+    DOM.toggleBottleBtn = document.getElementById('btn-toggle-bottle');
+    DOM.bottleBtnIcon = document.getElementById('bottle-btn-icon');
+    DOM.bottleBtnLabel = document.getElementById('bottle-btn-label');
+    DOM.bottleStatusDot = document.getElementById('bottle-status-dot');
+    DOM.bottleStatusText = document.getElementById('bottle-status-text');
+    DOM.paletteSwatches = document.querySelectorAll('.palette-swatch');
+
+    // Project 003: Dream Delivery Map
+    DOM.sendDreamBtn = document.getElementById('btn-send-dream');
+    DOM.travelingStar = document.getElementById('traveling-star');
+    DOM.stepBay = document.getElementById('step-bay');
+    DOM.stepMoon = document.getElementById('step-moon');
+    DOM.stepHome = document.getElementById('step-home');
+    DOM.mapStatusDot = document.getElementById('map-status-dot');
+    DOM.mapStatusText = document.getElementById('map-status-text');
+
+    // Status Deck
+    DOM.statStarsMapped = document.getElementById('stat-stars-mapped');
+    DOM.statDreamDeliveries = document.getElementById('stat-dream-deliveries');
+
+    // Guestbook & Wishes
+    DOM.wishForm = document.getElementById('wish-form');
+    DOM.wishAuthorInput = document.getElementById('wish-author');
+    DOM.wishTextInput = document.getElementById('wish-text');
+    DOM.charCounter = document.getElementById('char-counter');
+    DOM.wishesList = document.getElementById('wishes-list');
+    DOM.wishCountPill = document.getElementById('wish-count-pill');
+    DOM.quickPromptBtns = document.querySelectorAll('.btn-prompt');
+
+    // Easter Egg
+    DOM.easterEggStar = document.getElementById('easter-egg-star');
+    DOM.easterModal = document.getElementById('easter-modal');
+    DOM.easterBackdrop = document.getElementById('easter-backdrop');
+    DOM.easterCloseBtn = document.getElementById('easter-close-btn');
+    DOM.easterDismissBtn = document.getElementById('easter-dismiss-btn');
+
+    DOM.btnBackToTop = document.getElementById('btn-back-to-top');
+    DOM.navLinks = document.querySelectorAll('.site-nav .nav-link');
+  }
+
   // =========================================================================
-  // 2. WEB AUDIO API SYNTHESIZER
+  // 2. PERSISTENT LULLABY AUDIO CONTROLLER (SINGLE SHARED INSTANCE)
+  // =========================================================================
+
+  class PersistentLullabyPlayer {
+    constructor() {
+      // Connect to user's actual audio file from audio/
+      this.audioSrc = 'audio/the_mountain-lullaby-lullaby-music-576578.mp3';
+      this.audio = new Audio();
+      this.audio.preload = 'metadata';
+      this.audio.src = this.audioSrc;
+      this.listeners = new Set();
+      this.hasError = false;
+
+      this.audio.addEventListener('loadedmetadata', () => {
+        this.notify();
+      });
+
+      this.audio.addEventListener('timeupdate', () => {
+        this.notify();
+      });
+
+      this.audio.addEventListener('play', () => {
+        this.notify();
+      });
+
+      this.audio.addEventListener('pause', () => {
+        this.notify();
+      });
+
+      this.audio.addEventListener('ended', () => {
+        this.notify();
+      });
+
+      this.audio.addEventListener('error', (e) => {
+        console.warn('Lullaby audio track notice:', e);
+        this.hasError = true;
+        this.notify();
+      });
+    }
+
+    get isPlaying() {
+      return !this.audio.paused && !this.audio.ended && this.audio.currentTime > 0;
+    }
+
+    get currentTime() {
+      return this.audio.currentTime || 0;
+    }
+
+    get duration() {
+      return this.audio.duration || 0;
+    }
+
+    get progress() {
+      if (!this.duration) return 0;
+      return Math.min(100, Math.max(0, (this.currentTime / this.duration) * 100));
+    }
+
+    get isEnded() {
+      return this.audio.ended;
+    }
+
+    play() {
+      if (this.isEnded) {
+        this.audio.currentTime = 0;
+      }
+      return this.audio.play().catch((err) => {
+        console.warn('Playback gesture or source notice:', err);
+      });
+    }
+
+    pause() {
+      this.audio.pause();
+    }
+
+    toggle() {
+      if (this.isPlaying) {
+        this.pause();
+        showToast('Lullaby resting until next bedtime. 🌙', '🌙');
+      } else {
+        this.play();
+        showToast('Playing your lullaby... Listen closely. 🎵', '🎶');
+      }
+    }
+
+    replay() {
+      this.audio.currentTime = 0;
+      this.play();
+      showToast('Replaying the mountain lullaby from the start! 🎵', '🔄');
+    }
+
+    seek(ratio) {
+      if (this.duration) {
+        this.audio.currentTime = Math.max(0, Math.min(this.duration, ratio * this.duration));
+        this.notify();
+      }
+    }
+
+    subscribe(callback) {
+      this.listeners.add(callback);
+      callback(this.getState());
+      return () => this.listeners.delete(callback);
+    }
+
+    notify() {
+      const stateData = this.getState();
+      this.listeners.forEach((cb) => {
+        try {
+          cb(stateData);
+        } catch (e) {
+          console.error(e);
+        }
+      });
+    }
+
+    getState() {
+      return {
+        isPlaying: this.isPlaying,
+        currentTime: this.currentTime,
+        duration: this.duration,
+        progress: this.progress,
+        isEnded: this.isEnded,
+        hasError: this.hasError,
+        formattedCurrent: formatTime(this.currentTime),
+        formattedDuration: this.duration ? formatTime(this.duration) : '--:--'
+      };
+    }
+  }
+
+  function formatTime(seconds) {
+    if (isNaN(seconds) || seconds < 0) return '0:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  }
+
+  // Authoritative single player instance that lives throughout user session
+  const lullabyPlayer = new PersistentLullabyPlayer();
+
+  // =========================================================================
+  // 3. SEPARATE SOUND-EFFECTS SYNTHESIZER (WEB AUDIO CHIMES)
   // =========================================================================
 
   class CelestialAudio {
     constructor() {
       this.ctx = null;
       this.activeOscillators = [];
-      this.lullabyTimeout = null;
     }
 
     init() {
@@ -125,7 +350,7 @@
       }
     }
 
-    playTone(freq, type = 'sine', duration = 0.3, volume = 0.15, when = 0) {
+    playTone(freq, type = 'sine', duration = 0.3, volume = 0.12, when = 0) {
       if (!state.soundEnabled || !this.ctx) return null;
 
       try {
@@ -135,7 +360,6 @@
         osc.type = type;
         osc.frequency.setValueAtTime(freq, this.ctx.currentTime + when);
 
-        // Soft ADSR envelope for cozy gentle tone (prevents clicks)
         const startTime = this.ctx.currentTime + when;
         gain.gain.setValueAtTime(0.0001, startTime);
         gain.gain.exponentialRampToValueAtTime(volume, startTime + 0.04);
@@ -155,7 +379,6 @@
 
         return osc;
       } catch (err) {
-        console.warn('Audio playback error:', err);
         return null;
       }
     }
@@ -163,18 +386,18 @@
     playChime() {
       if (!state.soundEnabled) return;
       this.init();
-      // Two-tone bell: E5 (659Hz) -> B5 (987Hz)
-      this.playTone(659.25, 'sine', 0.4, 0.12, 0);
-      this.playTone(987.77, 'sine', 0.6, 0.15, 0.12);
+      // Two-tone celestial bell: E5 (659Hz) -> B5 (987Hz)
+      this.playTone(659.25, 'sine', 0.4, 0.1, 0);
+      this.playTone(987.77, 'sine', 0.6, 0.12, 0.12);
     }
 
     playSparkleSneeze() {
       if (!state.soundEnabled) return;
       this.init();
-      // Sparkly ascending pentatonic arpeggio: C5, E5, G5, C6, E6
+      // Ascending pentatonic twinkle
       const notes = [523.25, 659.25, 783.99, 1046.5, 1318.51];
       notes.forEach((freq, i) => {
-        this.playTone(freq, 'sine', 0.25, 0.14, i * 0.08);
+        this.playTone(freq, 'sine', 0.22, 0.12, i * 0.07);
       });
     }
 
@@ -183,57 +406,15 @@
       this.init();
       const notes = [440, 554.37, 659.25, 880, 1108.73, 1318.51];
       notes.forEach((freq, i) => {
-        this.playTone(freq, 'sine', 0.5, 0.16, i * 0.12);
+        this.playTone(freq, 'sine', 0.45, 0.14, i * 0.1);
       });
-    }
-
-    playLullaby(onComplete) {
-      if (!state.soundEnabled) return;
-      this.init();
-      this.stopLullaby();
-
-      // Soothing music-box melody: E5, G5, A5, B5, G5, E5, D5, C5
-      const lullabySequence = [
-        { freq: 659.25, dur: 0.5, delay: 0 },
-        { freq: 783.99, dur: 0.5, delay: 0.45 },
-        { freq: 880.0, dur: 0.5, delay: 0.9 },
-        { freq: 987.77, dur: 0.7, delay: 1.35 },
-        { freq: 783.99, dur: 0.5, delay: 2.1 },
-        { freq: 659.25, dur: 0.5, delay: 2.6 },
-        { freq: 587.33, dur: 0.5, delay: 3.1 },
-        { freq: 523.25, dur: 0.9, delay: 3.6 }
-      ];
-
-      lullabySequence.forEach((note) => {
-        this.playTone(note.freq, 'sine', note.dur, 0.14, note.delay);
-      });
-
-      // Total sequence length is ~4.6 seconds
-      this.lullabyTimeout = setTimeout(() => {
-        if (typeof onComplete === 'function') {
-          onComplete();
-        }
-      }, 4700);
-    }
-
-    stopLullaby() {
-      if (this.lullabyTimeout) {
-        clearTimeout(this.lullabyTimeout);
-        this.lullabyTimeout = null;
-      }
-      this.activeOscillators.forEach((osc) => {
-        try {
-          osc.stop();
-        } catch (_) {}
-      });
-      this.activeOscillators = [];
     }
   }
 
   const audio = new CelestialAudio();
 
   // =========================================================================
-  // 3. TOAST & ACCESSIBILITY ANNOUNCER
+  // 4. TOAST NOTIFICATIONS & LIVE ACCESSIBILITY ANNOUNCER
   // =========================================================================
 
   function announce(message) {
@@ -244,7 +425,6 @@
 
   function showToast(message, icon = '✨') {
     announce(message);
-
     if (!DOM.toastShelf) return;
 
     const toast = document.createElement('div');
@@ -270,7 +450,7 @@
   }
 
   // =========================================================================
-  // 4. DAY MODE & DREAM MODE (THEME SWITCHER)
+  // 5. GLOBAL THEME ENGINE (DAY & DREAM MODE)
   // =========================================================================
 
   function initTheme() {
@@ -296,20 +476,18 @@
     if (DOM.themeToggle) {
       DOM.themeToggle.setAttribute('aria-pressed', isDream ? 'true' : 'false');
     }
-
     if (DOM.themeIcon) {
       DOM.themeIcon.textContent = isDream ? '☀️' : '🌙';
     }
-
     if (DOM.themeLabel) {
       DOM.themeLabel.textContent = isDream ? 'Day Mode' : 'Dream Mode';
     }
 
     if (announceChange) {
       if (isDream) {
-        showToast('Dream Mode activated. Goodnight, stargazer.', '🌙');
+        showToast('Dream Mode activated. Deep night skies above.', '🌙');
       } else {
-        showToast('Day Mode activated. Morning clouds are soft.', '☀️');
+        showToast('Day Mode activated. Gentle morning clouds.', '☀️');
       }
     }
 
@@ -325,7 +503,7 @@
   }
 
   // =========================================================================
-  // 5. SOUND SYSTEM TOGGLE & PERSISTENCE
+  // 6. SOUND EFFECTS TOGGLE (INDEPENDENT FROM LULLABY)
   // =========================================================================
 
   function initSound() {
@@ -346,14 +524,14 @@
       DOM.soundIcon.textContent = state.soundEnabled ? '🔔' : '🔇';
     }
     if (DOM.soundLabel) {
-      DOM.soundLabel.textContent = state.soundEnabled ? 'Sound On' : 'Sound Off';
+      DOM.soundLabel.textContent = state.soundEnabled ? 'Chimes On' : 'Chimes Off';
     }
 
     if (showNotification) {
       if (state.soundEnabled) {
-        showToast('Celestial audio enabled! Soft bells and lullabies unlocked.', '🔔');
+        showToast('Celestial chimes enabled! Soft bell notes unlocked.', '🔔');
       } else {
-        showToast('Sound muted. Peaceful quiet restored.', '🔇');
+        showToast('Celestial chimes muted.', '🔇');
       }
     }
   }
@@ -367,213 +545,270 @@
     if (state.soundEnabled) {
       audio.init();
       audio.playChime();
-      updateSoundUI(true);
-    } else {
-      audio.stopLullaby();
-      stopLullabyUI();
-      updateSoundUI(true);
     }
+    updateSoundUI(true);
   }
 
   // =========================================================================
-  // 6. TELEMETRY SYNCHRONIZATION
+  // 7. GLOBAL NAVBAR LULLABY PLAYER SYNCHRONIZATION
   // =========================================================================
 
-  function initTelemetry() {
-    try {
-      const savedStars = localStorage.getItem('nimbus_stars_mapped');
-      if (savedStars) state.starsMapped = parseInt(savedStars, 10) || 128;
+  function initGlobalLullabyNavbar() {
+    if (!DOM.globalLullabyBtn) return;
 
-      const savedDeliveries = localStorage.getItem('nimbus_dream_deliveries');
-      if (savedDeliveries) state.dreamDeliveries = parseInt(savedDeliveries, 10) || 7;
-    } catch (_) {}
-
-    if (DOM.statStarsMapped) DOM.statStarsMapped.textContent = state.starsMapped;
-    if (DOM.statDreamDeliveries) {
-      DOM.statDreamDeliveries.textContent = String(state.dreamDeliveries).padStart(2, '0');
-    }
-  }
-
-  function incrementStarsMapped() {
-    state.starsMapped += 1;
-    if (DOM.statStarsMapped) DOM.statStarsMapped.textContent = state.starsMapped;
-    try {
-      localStorage.setItem('nimbus_stars_mapped', state.starsMapped);
-    } catch (_) {}
-  }
-
-  function incrementDreamDeliveries() {
-    state.dreamDeliveries += 1;
-    if (DOM.statDreamDeliveries) {
-      DOM.statDreamDeliveries.textContent = String(state.dreamDeliveries).padStart(2, '0');
-    }
-    try {
-      localStorage.setItem('nimbus_dream_deliveries', state.dreamDeliveries);
-    } catch (_) {}
-  }
-
-  // =========================================================================
-  // 7. MOBILE NAVIGATION
-  // =========================================================================
-
-  function initNav() {
-    if (!DOM.navToggle || !DOM.siteNav) return;
-
-    DOM.navToggle.addEventListener('click', () => {
-      const isOpen = DOM.siteNav.classList.toggle('is-open');
-      DOM.navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    DOM.globalLullabyBtn.addEventListener('click', () => {
+      lullabyPlayer.toggle();
     });
 
-    DOM.navLinks.forEach((link) => {
-      link.addEventListener('click', () => {
-        DOM.siteNav.classList.remove('is-open');
-        DOM.navToggle.setAttribute('aria-expanded', 'false');
-      });
-    });
+    // Subscribe to persistent player state
+    lullabyPlayer.subscribe((playerState) => {
+      if (!DOM.globalLullabyBtn) return;
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && DOM.siteNav.classList.contains('is-open')) {
-        DOM.siteNav.classList.remove('is-open');
-        DOM.navToggle.setAttribute('aria-expanded', 'false');
-        DOM.navToggle.focus();
+      const isPlaying = playerState.isPlaying;
+      DOM.globalLullabyBtn.setAttribute('aria-pressed', isPlaying ? 'true' : 'false');
+      DOM.globalLullabyBtn.classList.toggle('is-playing-music', isPlaying);
+
+      if (isPlaying) {
+        if (DOM.globalLullabyIcon) DOM.globalLullabyIcon.textContent = '⏸️';
+        if (DOM.globalLullabyLabel) DOM.globalLullabyLabel.textContent = 'Playing';
+        DOM.globalLullabyBtn.setAttribute('aria-label', 'Pause lullaby');
+        DOM.globalLullabyBtn.setAttribute('title', 'Pause lullaby');
+      } else if (playerState.isEnded) {
+        if (DOM.globalLullabyIcon) DOM.globalLullabyIcon.textContent = '🔄';
+        if (DOM.globalLullabyLabel) DOM.globalLullabyLabel.textContent = 'Replay';
+        DOM.globalLullabyBtn.setAttribute('aria-label', 'Replay lullaby');
+        DOM.globalLullabyBtn.setAttribute('title', 'Replay lullaby');
+      } else {
+        if (DOM.globalLullabyIcon) DOM.globalLullabyIcon.textContent = '▶️';
+        if (DOM.globalLullabyLabel) DOM.globalLullabyLabel.textContent = 'Lullaby';
+        DOM.globalLullabyBtn.setAttribute('aria-label', 'Play lullaby');
+        DOM.globalLullabyBtn.setAttribute('title', 'Play lullaby');
       }
     });
   }
 
   // =========================================================================
-  // 8. HERO WISH MAKER & NIMBUS PARALLAX
+  // 8. PROJECT 001: LULLABY BOX UI & PROGRESS SYNCHRONIZATION
   // =========================================================================
 
-  function initHero() {
-    if (DOM.heroWishBtn) {
-      DOM.heroWishBtn.addEventListener('click', () => {
-        makeWish();
-      });
-    }
-
-    // Subtle pointer movement on desktop
-    if (DOM.heroStage && DOM.characterWrapper && !state.prefersReducedMotion && window.matchMedia('(pointer: fine)').matches) {
-      DOM.heroStage.addEventListener('mousemove', (e) => {
-        const rect = DOM.heroStage.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width - 0.5;
-        const y = (e.clientY - rect.top) / rect.height - 0.5;
-
-        DOM.characterWrapper.style.transform = `translate(${x * 12}px, ${y * 12}px) rotate(${x * 3}deg)`;
-      });
-
-      DOM.heroStage.addEventListener('mouseleave', () => {
-        DOM.characterWrapper.style.transform = '';
-      });
-    }
-  }
-
-  function makeWish() {
-    if (DOM.heroWishLayer) {
-      const star = document.createElement('span');
-      star.className = 'spawned-wish-star';
-      star.textContent = '✦';
-
-      const left = Math.floor(Math.random() * 70 + 15);
-      const top = Math.floor(Math.random() * 60 + 20);
-
-      star.style.left = `${left}%`;
-      star.style.top = `${top}%`;
-
-      DOM.heroWishLayer.appendChild(star);
-
-      const currentStars = DOM.heroWishLayer.querySelectorAll('.spawned-wish-star');
-      if (currentStars.length > 15) {
-        DOM.heroWishLayer.removeChild(currentStars[0]);
-      }
-
-      setTimeout(() => {
-        if (star.parentNode) {
-          star.parentNode.removeChild(star);
-        }
-      }, 3000);
-    }
-
-    audio.playChime();
-    incrementStarsMapped();
-    showToast('A tiny wish was chartered into the constellation sky! ✨', '⭐');
-  }
-
-  // =========================================================================
-  // 9. ODD QUIRK: SNEEZE A STAR
-  // =========================================================================
-
-  function initQuirk() {
-    if (!DOM.tellStoryBtn) return;
-
-    DOM.tellStoryBtn.addEventListener('click', () => {
-      audio.playSparkleSneeze();
-      incrementStarsMapped();
-      showToast('Achoo! 🌟 Nimbus sneezed a sparkling star in joy! "What a lovely story!"', '⭐');
-    });
-  }
-
-  // =========================================================================
-  // 10. PROJECT 001: STARSONG RADIO
-  // =========================================================================
-
-  function initStarsongRadio() {
+  function initLullabyBoxUI() {
     if (!DOM.toggleLullabyBtn) return;
 
-    DOM.toggleLullabyBtn.addEventListener('click', () => {
-      if (state.lullabyPlaying) {
-        stopLullaby();
+    // Toggle Play/Pause button
+    DOM.toggleLullabyBtn.onclick = () => {
+      if (lullabyPlayer.isEnded) {
+        lullabyPlayer.replay();
       } else {
-        startLullaby();
+        lullabyPlayer.toggle();
       }
-    });
-  }
+    };
 
-  function startLullaby() {
-    if (!state.soundEnabled) {
-      toggleSound();
+    // Replay button
+    if (DOM.replayLullabyBtn) {
+      DOM.replayLullabyBtn.onclick = () => {
+        lullabyPlayer.replay();
+      };
     }
 
-    state.lullabyPlaying = true;
-    if (DOM.toggleLullabyBtn) DOM.toggleLullabyBtn.setAttribute('aria-pressed', 'true');
-    if (DOM.lullabyBtnIcon) DOM.lullabyBtnIcon.textContent = '⏹️';
-    if (DOM.lullabyBtnLabel) DOM.lullabyBtnLabel.textContent = 'Stop lullaby';
+    // Interactive progress bar seek
+    if (DOM.lullabyProgressContainer) {
+      const handleSeek = (e) => {
+        const rect = DOM.lullabyProgressContainer.getBoundingClientRect();
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        if (clientX === undefined) return;
+        const clickX = clientX - rect.left;
+        const ratio = Math.max(0, Math.min(1, clickX / rect.width));
+        lullabyPlayer.seek(ratio);
+      };
 
-    if (DOM.projectStarsong) DOM.projectStarsong.classList.add('is-active-lullaby');
-    if (DOM.radioStatusDot) DOM.radioStatusDot.classList.add('is-playing');
-    if (DOM.radioStatusText) DOM.radioStatusText.textContent = 'Broadcasting: Pleiades Lullaby (88.5 FM)';
+      DOM.lullabyProgressContainer.onclick = handleSeek;
 
-    showToast('Playing Nimbus’s pocket lullaby... Listen closely. 🎵', '🎶');
+      DOM.lullabyProgressContainer.onkeydown = (e) => {
+        if (!lullabyPlayer.duration) return;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          lullabyPlayer.seek(Math.min(1, (lullabyPlayer.currentTime + 5) / lullabyPlayer.duration));
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          lullabyPlayer.seek(Math.max(0, (lullabyPlayer.currentTime - 5) / lullabyPlayer.duration));
+        }
+      };
+    }
 
-    audio.playLullaby(() => {
-      stopLullaby();
-    });
+    // Subscribe Lullaby Box UI to player updates
+    lullabyPlayer.subscribe(updateLullabyBoxUI);
   }
 
-  function stopLullaby() {
-    audio.stopLullaby();
-    stopLullabyUI();
-    showToast('Lullaby resting until next bedtime.', '🌙');
-  }
+  function updateLullabyBoxUI(playerState) {
+    if (!DOM.toggleLullabyBtn) return;
 
-  function stopLullabyUI() {
-    state.lullabyPlaying = false;
-    if (DOM.toggleLullabyBtn) DOM.toggleLullabyBtn.setAttribute('aria-pressed', 'false');
-    if (DOM.lullabyBtnIcon) DOM.lullabyBtnIcon.textContent = '🎵';
-    if (DOM.lullabyBtnLabel) DOM.lullabyBtnLabel.textContent = 'Play my lullaby';
+    const isPlaying = playerState.isPlaying;
 
-    if (DOM.projectStarsong) DOM.projectStarsong.classList.remove('is-active-lullaby');
-    if (DOM.radioStatusDot) DOM.radioStatusDot.classList.remove('is-playing');
-    if (DOM.radioStatusText) DOM.radioStatusText.textContent = 'Tuned to Pleiades 92.4 FM · Standing by';
+    // Play/Pause button
+    DOM.toggleLullabyBtn.setAttribute('aria-pressed', isPlaying ? 'true' : 'false');
+    if (isPlaying) {
+      if (DOM.lullabyBtnIcon) DOM.lullabyBtnIcon.textContent = '⏸️';
+      if (DOM.lullabyBtnLabel) DOM.lullabyBtnLabel.textContent = 'Pause lullaby';
+    } else if (playerState.isEnded) {
+      if (DOM.lullabyBtnIcon) DOM.lullabyBtnIcon.textContent = '🔄';
+      if (DOM.lullabyBtnLabel) DOM.lullabyBtnLabel.textContent = 'Replay lullaby';
+    } else {
+      if (DOM.lullabyBtnIcon) DOM.lullabyBtnIcon.textContent = '▶️';
+      if (DOM.lullabyBtnLabel) {
+        DOM.lullabyBtnLabel.textContent = playerState.currentTime > 0 ? 'Resume lullaby' : 'Play lullaby';
+      }
+    }
+
+    // Replay button visibility
+    if (DOM.replayLullabyBtn) {
+      DOM.replayLullabyBtn.style.display = playerState.currentTime > 0 || playerState.isEnded ? 'inline-flex' : 'none';
+    }
+
+    // Timers
+    if (DOM.lullabyTimeCurrent) {
+      DOM.lullabyTimeCurrent.textContent = playerState.formattedCurrent;
+    }
+    if (DOM.lullabyTimeDuration) {
+      DOM.lullabyTimeDuration.textContent = playerState.formattedDuration;
+    }
+
+    // Progress bar
+    if (DOM.lullabyProgressFill) {
+      DOM.lullabyProgressFill.style.width = `${playerState.progress}%`;
+    }
+    if (DOM.lullabyProgressThumb) {
+      DOM.lullabyProgressThumb.style.left = `${playerState.progress}%`;
+    }
+    if (DOM.lullabyProgressContainer) {
+      DOM.lullabyProgressContainer.setAttribute('aria-valuenow', Math.round(playerState.progress));
+    }
+
+    // Status Line and Visualizer
+    if (DOM.projectStarsong) {
+      DOM.projectStarsong.classList.toggle('is-active-lullaby', isPlaying);
+    }
+    if (DOM.radioStatusDot) {
+      DOM.radioStatusDot.classList.toggle('is-playing', isPlaying);
+    }
+
+    if (DOM.radioStatusText) {
+      if (isPlaying) {
+        DOM.radioStatusText.textContent = 'Playing your lullaby · 🎵';
+      } else if (playerState.isEnded) {
+        DOM.radioStatusText.textContent = 'Lullaby finished · Sweet dreams';
+      } else if (playerState.currentTime > 0) {
+        DOM.radioStatusText.textContent = 'Paused · Rest your eyes';
+      } else {
+        DOM.radioStatusText.textContent = 'Ready to dream · Press Play';
+      }
+    }
   }
 
   // =========================================================================
-  // 11. PROJECT 002: MOONLIGHT BOTTLES
+  // 9. SEAMLESS NAVIGATION ROUTER (KEEPS AUDIO PLAYING ACROSS PAGES)
+  // =========================================================================
+
+  const PageRouter = {
+    init() {
+      document.addEventListener('click', (e) => {
+        const link = e.target.closest('a');
+        if (!link) return;
+
+        const href = link.getAttribute('href');
+        if (!href) return;
+
+        // Ignore hash jumps, external, tel, mailto
+        if (href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || link.target === '_blank') {
+          return;
+        }
+
+        // Check if internal navigation target
+        const isInternalPage = href.endsWith('.html') || href === '/' || href.includes('.html#');
+        const urlObj = new URL(link.href, window.location.href);
+
+        if (urlObj.origin === window.location.origin && isInternalPage) {
+          e.preventDefault();
+          this.navigateTo(link.href);
+        }
+      });
+
+      // Browser Back & Forward buttons
+      window.addEventListener('popstate', () => {
+        this.loadPage(window.location.href, false);
+      });
+    },
+
+    async navigateTo(url) {
+      if (url === window.location.href) return;
+      await this.loadPage(url, true);
+    },
+
+    async loadPage(url, push = true) {
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const htmlText = await response.text();
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlText, 'text/html');
+
+        const newMain = doc.querySelector('main#main-content');
+        const currentMain = document.querySelector('main#main-content');
+
+        if (newMain && currentMain) {
+          // Update Document Title
+          document.title = doc.title;
+
+          // Swap main content without destroying window or audio!
+          currentMain.innerHTML = newMain.innerHTML;
+
+          // Update URL in browser bar
+          if (push) {
+            window.history.pushState({ url }, '', url);
+          }
+
+          // Update active navigation links
+          const targetPath = new URL(url, window.location.origin).pathname.split('/').pop() || 'index.html';
+          document.querySelectorAll('.site-nav .nav-link').forEach((navLink) => {
+            const linkHref = navLink.getAttribute('href').split('/').pop() || 'index.html';
+            const isActive = linkHref === targetPath;
+            navLink.classList.toggle('is-active', isActive);
+            if (isActive) {
+              navLink.setAttribute('aria-current', 'page');
+            } else {
+              navLink.removeAttribute('aria-current');
+            }
+          });
+
+          // Scroll to top
+          window.scrollTo({ top: 0, behavior: 'instant' });
+
+          // Re-initialize all page-specific components in new DOM
+          initPageComponents();
+
+          // Close mobile menu if open
+          if (DOM.siteNav && DOM.siteNav.classList.contains('is-open')) {
+            DOM.siteNav.classList.remove('is-open');
+            if (DOM.navToggle) DOM.navToggle.setAttribute('aria-expanded', 'false');
+          }
+        } else {
+          window.location.href = url;
+        }
+      } catch (err) {
+        console.warn('Router fetch fallback, navigating normally:', err);
+        window.location.href = url;
+      }
+    }
+  };
+
+  // =========================================================================
+  // 10. PROJECT 002: MIDNIGHT LANTERN & MOONLIGHT BOTTLES
   // =========================================================================
 
   function initMoonlightBottles() {
     if (!DOM.toggleBottleBtn || !DOM.bottleStage) return;
 
-    DOM.toggleBottleBtn.addEventListener('click', () => {
+    DOM.toggleBottleBtn.onclick = () => {
       state.bottleLit = !state.bottleLit;
       DOM.bottleStage.setAttribute('data-lit', state.bottleLit ? 'true' : 'false');
       DOM.toggleBottleBtn.setAttribute('aria-pressed', state.bottleLit ? 'true' : 'false');
@@ -592,11 +827,11 @@
         if (DOM.bottleStatusText) DOM.bottleStatusText.textContent = 'State: Extinguished & Sleeping · Glow paused';
         showToast('Lantern extinguished. Starlight safely resting inside.', '🌙');
       }
-    });
+    };
 
     if (DOM.paletteSwatches && DOM.paletteSwatches.length > 0) {
       DOM.paletteSwatches.forEach((swatch) => {
-        swatch.addEventListener('click', () => {
+        swatch.onclick = () => {
           DOM.paletteSwatches.forEach((s) => {
             s.classList.remove('is-active');
             s.setAttribute('aria-checked', 'false');
@@ -614,7 +849,7 @@
             updateBottleStatusText();
             audio.playChime();
           }
-        });
+        };
       });
     }
   }
@@ -632,16 +867,16 @@
   }
 
   // =========================================================================
-  // 12. PROJECT 003: DREAM DELIVERY MAP
+  // 11. PROJECT 003: DREAM DELIVERY MAP
   // =========================================================================
 
   function initDreamDelivery() {
     if (!DOM.sendDreamBtn || !DOM.travelingStar) return;
 
-    DOM.sendDreamBtn.addEventListener('click', () => {
+    DOM.sendDreamBtn.onclick = () => {
       if (state.isDeliveringDream) return;
       deliverDream();
-    });
+    };
   }
 
   function deliverDream() {
@@ -723,7 +958,77 @@
   }
 
   // =========================================================================
-  // 13. ORIGIN STORY: INTERSECTION OBSERVER SCROLL
+  // 12. HERO WISH MAKER & NIMBUS PARALLAX
+  // =========================================================================
+
+  function initHero() {
+    if (DOM.heroWishBtn) {
+      DOM.heroWishBtn.onclick = () => {
+        makeWish();
+      };
+    }
+
+    if (DOM.heroStage && DOM.characterWrapper && !state.prefersReducedMotion && window.matchMedia('(pointer: fine)').matches) {
+      DOM.heroStage.onmousemove = (e) => {
+        const rect = DOM.heroStage.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        DOM.characterWrapper.style.transform = `translate(${x * 12}px, ${y * 12}px) rotate(${x * 3}deg)`;
+      };
+
+      DOM.heroStage.onmouseleave = () => {
+        DOM.characterWrapper.style.transform = '';
+      };
+    }
+  }
+
+  function makeWish() {
+    if (DOM.heroWishLayer) {
+      const star = document.createElement('span');
+      star.className = 'spawned-wish-star';
+      star.textContent = '✦';
+
+      const left = Math.floor(Math.random() * 70 + 15);
+      const top = Math.floor(Math.random() * 60 + 20);
+
+      star.style.left = `${left}%`;
+      star.style.top = `${top}%`;
+
+      DOM.heroWishLayer.appendChild(star);
+
+      const currentStars = DOM.heroWishLayer.querySelectorAll('.spawned-wish-star');
+      if (currentStars.length > 15) {
+        DOM.heroWishLayer.removeChild(currentStars[0]);
+      }
+
+      setTimeout(() => {
+        if (star.parentNode) {
+          star.parentNode.removeChild(star);
+        }
+      }, 3000);
+    }
+
+    audio.playChime();
+    incrementStarsMapped();
+    showToast('A tiny wish was chartered into the constellation sky! ✨', '⭐');
+  }
+
+  // =========================================================================
+  // 13. ODD QUIRK: SNEEZE A STAR
+  // =========================================================================
+
+  function initQuirk() {
+    if (!DOM.tellStoryBtn) return;
+
+    DOM.tellStoryBtn.onclick = () => {
+      audio.playSparkleSneeze();
+      incrementStarsMapped();
+      showToast('Achoo! 🌟 Nimbus sneezed a sparkling star in joy! "What a lovely story!"', '⭐');
+    };
+  }
+
+  // =========================================================================
+  // 14. STORY CHAPTERS SCROLL OBSERVER
   // =========================================================================
 
   function initStoryChapters() {
@@ -749,7 +1054,7 @@
   }
 
   // =========================================================================
-  // 14. GUESTBOOK & WISH WALL
+  // 15. GUESTBOOK & WISH WALL
   // =========================================================================
 
   const defaultWishes = [
@@ -777,25 +1082,25 @@
     renderWishes(wishes);
 
     if (DOM.wishTextInput && DOM.charCounter) {
-      DOM.wishTextInput.addEventListener('input', () => {
+      DOM.wishTextInput.oninput = () => {
         DOM.charCounter.textContent = DOM.wishTextInput.value.length;
-      });
+      };
     }
 
     if (DOM.quickPromptBtns) {
       DOM.quickPromptBtns.forEach((btn) => {
-        btn.addEventListener('click', () => {
+        btn.onclick = () => {
           const promptText = btn.getAttribute('data-text');
           if (DOM.wishTextInput) {
             DOM.wishTextInput.value = promptText;
             if (DOM.charCounter) DOM.charCounter.textContent = promptText.length;
             DOM.wishTextInput.focus();
           }
-        });
+        };
       });
     }
 
-    DOM.wishForm.addEventListener('submit', (e) => {
+    DOM.wishForm.onsubmit = (e) => {
       e.preventDefault();
 
       const author = DOM.wishAuthorInput ? DOM.wishAuthorInput.value.trim() : '';
@@ -824,7 +1129,7 @@
 
       audio.playSparkleSneeze();
       showToast('Your wish has been pinned to Nimbus’s Starry Wall! 🌟', '⭐');
-    });
+    };
   }
 
   function loadWishes() {
@@ -865,13 +1170,13 @@
   }
 
   // =========================================================================
-  // 15. EASTER EGG — NIMBUS'S SECRET
+  // 16. EASTER EGG — NIMBUS'S SECRET
   // =========================================================================
 
   function initEasterEgg() {
     if (!DOM.easterEggStar || !DOM.easterModal) return;
 
-    DOM.easterEggStar.addEventListener('click', () => {
+    DOM.easterEggStar.onclick = () => {
       state.easterEggTaps += 1;
 
       if (state.easterEggTaps < state.easterEggMaxTaps) {
@@ -881,108 +1186,159 @@
       } else {
         triggerEasterEgg();
       }
-    });
+    };
 
-    if (DOM.easterCloseBtn) DOM.easterCloseBtn.addEventListener('click', closeEasterEgg);
-    if (DOM.easterDismissBtn) DOM.easterDismissBtn.addEventListener('click', closeEasterEgg);
-    if (DOM.easterBackdrop) DOM.easterBackdrop.addEventListener('click', closeEasterEgg);
+    if (DOM.easterCloseBtn) DOM.easterCloseBtn.onclick = closeEasterEgg;
+    if (DOM.easterDismissBtn) DOM.easterDismissBtn.onclick = closeEasterEgg;
+    if (DOM.easterBackdrop) DOM.easterBackdrop.onclick = closeEasterEgg;
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !DOM.easterModal.hasAttribute('hidden')) {
+    document.onkeydown = (e) => {
+      if (e.key === 'Escape' && DOM.easterModal && !DOM.easterModal.hasAttribute('hidden')) {
         closeEasterEgg();
       }
-    });
+    };
   }
 
   function triggerEasterEgg() {
     state.easterEggTaps = 0;
     audio.playEasterEggFanfare();
 
-    DOM.easterModal.removeAttribute('hidden');
-    if (DOM.easterDismissBtn) DOM.easterDismissBtn.focus();
-
-    for (let i = 0; i < 8; i++) {
-      setTimeout(() => {
-        makeWish();
-      }, i * 160);
+    if (DOM.easterModal) {
+      DOM.easterModal.removeAttribute('hidden');
+      DOM.easterModal.setAttribute('aria-hidden', 'false');
     }
+    if (DOM.easterCloseBtn) {
+      DOM.easterCloseBtn.focus();
+    }
+
+    incrementStarsMapped();
+    incrementStarsMapped();
+    incrementStarsMapped();
+
+    spawnEasterEggSparkles();
+    showToast('Secret discovered! Nimbus whispers a constellation secret. 🌌', '🎉');
   }
 
   function closeEasterEgg() {
-    if (DOM.easterModal) DOM.easterModal.setAttribute('hidden', '');
-    if (DOM.easterEggStar) DOM.easterEggStar.focus();
+    if (DOM.easterModal) {
+      DOM.easterModal.setAttribute('hidden', '');
+      DOM.easterModal.setAttribute('aria-hidden', 'true');
+    }
+    if (DOM.easterEggStar) {
+      DOM.easterEggStar.focus();
+    }
   }
 
-  // =========================================================================
-  // 16. SPARKLE CURSOR TRAIL (DESKTOP BONUS)
-  // =========================================================================
-
-  function initCursorTrail() {
-    if (state.prefersReducedMotion) return;
-    if (!window.matchMedia('(pointer: fine)').matches) return;
-
-    let lastSparkleTime = 0;
-    const sparkleThrottle = 45; // ms
-
-    document.addEventListener('mousemove', (e) => {
-      const now = Date.now();
-      if (now - lastSparkleTime < sparkleThrottle) return;
-      lastSparkleTime = now;
-
-      const particle = document.createElement('span');
-      particle.className = 'cursor-sparkle';
-      particle.textContent = ['✦', '✧', '⋆'][Math.floor(Math.random() * 3)];
-      particle.style.left = `${e.clientX}px`;
-      particle.style.top = `${e.clientY}px`;
-
-      document.body.appendChild(particle);
-
+  function spawnEasterEggSparkles() {
+    const symbols = ['✦', '⭐', '✨', '☁️', '🌙'];
+    for (let i = 0; i < 24; i++) {
       setTimeout(() => {
-        if (particle.parentNode) {
-          particle.parentNode.removeChild(particle);
-        }
-      }, 600);
-    });
+        const sparkle = document.createElement('span');
+        sparkle.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        sparkle.style.position = 'fixed';
+        sparkle.style.left = `${Math.random() * 90 + 5}%`;
+        sparkle.style.top = `${Math.random() * 80 + 10}%`;
+        sparkle.style.fontSize = `${Math.floor(Math.random() * 18 + 14)}px`;
+        sparkle.style.pointerEvents = 'none';
+        sparkle.style.zIndex = '99999';
+        sparkle.style.color = '#e7bf70';
+        sparkle.style.animation = 'floatUpAndFade 2.5s ease-out forwards';
+
+        document.body.appendChild(sparkle);
+        setTimeout(() => {
+          if (sparkle.parentNode) sparkle.parentNode.removeChild(sparkle);
+        }, 2500);
+      }, i * 70);
+    }
   }
 
   // =========================================================================
-  // 17. AMBIENT BACKGROUND STARS
+  // 17. TELEMETRY & AMBIENT STARFIELD
   // =========================================================================
+
+  function initTelemetry() {
+    try {
+      const savedStars = localStorage.getItem('nimbus_stars_mapped');
+      if (savedStars) state.starsMapped = parseInt(savedStars, 10) || 128;
+
+      const savedDeliveries = localStorage.getItem('nimbus_dream_deliveries');
+      if (savedDeliveries) state.dreamDeliveries = parseInt(savedDeliveries, 10) || 7;
+    } catch (_) {}
+
+    if (DOM.statStarsMapped) DOM.statStarsMapped.textContent = state.starsMapped;
+    if (DOM.statDreamDeliveries) {
+      DOM.statDreamDeliveries.textContent = String(state.dreamDeliveries).padStart(2, '0');
+    }
+  }
+
+  function incrementStarsMapped() {
+    state.starsMapped += 1;
+    if (DOM.statStarsMapped) DOM.statStarsMapped.textContent = state.starsMapped;
+    try {
+      localStorage.setItem('nimbus_stars_mapped', state.starsMapped);
+    } catch (_) {}
+  }
+
+  function incrementDreamDeliveries() {
+    state.dreamDeliveries += 1;
+    if (DOM.statDreamDeliveries) {
+      DOM.statDreamDeliveries.textContent = String(state.dreamDeliveries).padStart(2, '0');
+    }
+    try {
+      localStorage.setItem('nimbus_dream_deliveries', state.dreamDeliveries);
+    } catch (_) {}
+  }
 
   function initAmbientStars() {
     if (!DOM.ambientStarfield) return;
+    DOM.ambientStarfield.innerHTML = '';
 
-    const starCount = window.innerWidth < 768 ? 25 : 50;
-
+    const starCount = window.innerWidth < 768 ? 20 : 40;
     for (let i = 0; i < starCount; i++) {
-      const star = document.createElement('span');
+      const star = document.createElement('div');
       star.className = 'ambient-star';
-
-      const x = Math.random() * 100;
-      const y = Math.random() * 100;
-      const size = Math.random() * 3 + 1.5;
-      const delay = Math.random() * 5;
-      const duration = Math.random() * 3 + 3;
-
-      star.style.left = `${x}%`;
-      star.style.top = `${y}%`;
-      star.style.width = `${size}px`;
-      star.style.height = `${size}px`;
-      star.style.animationDelay = `${delay}s`;
-      star.style.animationDuration = `${duration}s`;
-
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.animationDelay = `${Math.random() * 4}s`;
+      star.style.animationDuration = `${3 + Math.random() * 3}s`;
       DOM.ambientStarfield.appendChild(star);
     }
   }
 
   // =========================================================================
-  // 18. BACK TO TOP
+  // 18. MOBILE NAV & BACK TO TOP
   // =========================================================================
+
+  function initNav() {
+    if (!DOM.navToggle || !DOM.siteNav) return;
+
+    DOM.navToggle.onclick = () => {
+      const isOpen = DOM.siteNav.classList.toggle('is-open');
+      DOM.navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    };
+
+    DOM.navLinks.forEach((link) => {
+      link.addEventListener('click', () => {
+        DOM.siteNav.classList.remove('is-open');
+        if (DOM.navToggle) DOM.navToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && DOM.siteNav.classList.contains('is-open')) {
+        DOM.siteNav.classList.remove('is-open');
+        if (DOM.navToggle) {
+          DOM.navToggle.setAttribute('aria-expanded', 'false');
+          DOM.navToggle.focus();
+        }
+      }
+    });
+  }
 
   function initBackToTop() {
     if (!DOM.btnBackToTop) return;
 
-    DOM.btnBackToTop.addEventListener('click', (e) => {
+    DOM.btnBackToTop.onclick = (e) => {
       e.preventDefault();
       window.scrollTo({
         top: 0,
@@ -990,35 +1346,48 @@
       });
       const firstHeading = document.querySelector('h1, h2');
       if (firstHeading) firstHeading.focus();
-    });
+    };
   }
 
   // =========================================================================
-  // 19. INITIALIZATION BOOTSTRAP
+  // 19. PAGE COMPONENTS INITIALIZATION (RUNS ON INITIAL BOOT & AFTER ROUTING)
   // =========================================================================
 
-  function boot() {
-    initTheme();
-    initSound();
-    initTelemetry();
-    initNav();
+  function initPageComponents() {
+    queryPageDOM();
     initHero();
     initQuirk();
-    initStarsongRadio();
+    initLullabyBoxUI();
     initMoonlightBottles();
     initDreamDelivery();
     initStoryChapters();
     initGuestbook();
     initEasterEgg();
-    initCursorTrail();
-    initAmbientStars();
+    initTelemetry();
     initBackToTop();
 
+    // Notify player to update fresh DOM elements with live playback status
+    lullabyPlayer.notify();
+  }
+
+  // =========================================================================
+  // 20. MASTER BOOTSTRAP
+  // =========================================================================
+
+  function boot() {
+    initTheme();
+    initSound();
+    initNav();
+    initGlobalLullabyNavbar();
+    initAmbientStars();
+    PageRouter.init();
+    initPageComponents();
+
     if (DOM.themeToggle) {
-      DOM.themeToggle.addEventListener('click', toggleTheme);
+      DOM.themeToggle.onclick = toggleTheme;
     }
     if (DOM.soundToggle) {
-      DOM.soundToggle.addEventListener('click', toggleSound);
+      DOM.soundToggle.onclick = toggleSound;
     }
 
     console.log(

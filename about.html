@@ -71,16 +71,22 @@
           <li><a href="story.html" class="nav-link">Story</a></li>
         </ul>
 
-        <!-- Action Controls: Compact Theme & Sound Toggle on desktop -->
+        <!-- Action Controls: Theme, Global Lullaby Player, and Chimes Sound Effect -->
         <div class="nav-controls">
           <button type="button" class="btn-control btn-control-compact" id="theme-toggle" aria-pressed="false" aria-label="Switch between Day Mode and Dream Mode" title="Toggle Day / Dream Mode">
             <span class="btn-control-icon" id="theme-icon" aria-hidden="true">🌙</span>
             <span class="btn-control-label" id="theme-label">Dream Mode</span>
           </button>
 
-          <button type="button" class="btn-control btn-control-compact" id="sound-toggle" aria-pressed="false" aria-label="Toggle celestial sound effects and music" title="Toggle Sound On / Off">
+          <button type="button" class="btn-control btn-control-compact btn-lullaby-global" id="global-lullaby-btn" aria-pressed="false" aria-label="Play lullaby" title="Play lullaby">
+            <span class="btn-control-icon" id="global-lullaby-icon" aria-hidden="true">▶️</span>
+            <span class="btn-control-label" id="global-lullaby-label">Lullaby</span>
+            <span class="global-music-pulse" id="global-music-pulse" aria-hidden="true"></span>
+          </button>
+
+          <button type="button" class="btn-control btn-control-compact" id="sound-toggle" aria-pressed="false" aria-label="Toggle celestial chimes and sound effects" title="Toggle sound effects (Chimes)">
             <span class="btn-control-icon" id="sound-icon" aria-hidden="true">🔇</span>
-            <span class="btn-control-label" id="sound-label">Sound Off</span>
+            <span class="btn-control-label" id="sound-label">Chimes Off</span>
           </button>
         </div>
       </nav>
